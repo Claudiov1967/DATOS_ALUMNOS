@@ -1,9 +1,10 @@
 import re
 
 
-def validar_datos(nombre, apellido, curso, documento, domicilio, telefono, nacimiento, mail): 
+def validar_datos(nombre, apellido, curso, documento, domicilio, telefono, nacimiento, mail,edad): 
    
-    resultado =[]            
+    resultado =[]      
+    values= ('egb','cfi','superior','integracion','ex')       
     ###############################  REGEX   ###################################
     # controla que en todos los entries se hayan ingresado datos
     if (nombre.get() == "" or apellido.get() == " " or curso.get() == "" or documento.get() == "" or domicilio.get() == "" or telefono.get() == "" or nacimiento.get() == "" or mail.get()==""):
@@ -37,6 +38,11 @@ def validar_datos(nombre, apellido, curso, documento, domicilio, telefono, nacim
     patron = "^[a-zA-ZáéíóúñÑ ]+$"
     if not (re.match(patron, nombre.get()) and re.match(patron, apellido.get())):
         return "El nombre y el apellido solo debe contener letras: ", [nombre.get(),apellido.get(),curso.get(),documento.get()]
+    if curso.get() not in values:
+        return "CURSO: Elija egb, cfi, superior, integracion o ex ", [nombre.get(),apellido.get(),curso.get(),documento.get()]
+        print("Not in values")
+    if edad <5:
+        return "La edad debe ser mayor que 5 años",  [nombre.get(),apellido.get(),curso.get(),documento.get()]
     else:
         return None
     

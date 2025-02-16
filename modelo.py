@@ -9,6 +9,8 @@ from datetime import datetime
 import os
 import sys 
 from con_regex import validar_datos
+from observador import Subject
+
 
 """
 variables para el grafico
@@ -224,7 +226,7 @@ Returns:
 
 
 # La clase Abmc es la que la encargada de administrar la comunicacion con la base de datos
-class Abmc():
+class Abmc(Subject):
           
         """
         Class para la gestion de alumnos en la base de datos
@@ -271,8 +273,11 @@ class Abmc():
                     - retorno (string): tiene la informacion para ser mostrada en pantalla en VISTA 
                     - resultado (list): Una lista con todos los datos en la DB para actualizar el treeview.                                             
             """
-            resultado =[]   
-            validacion = validar_datos(nombre, apellido, curso, documento, domicilio, telefono, nacimiento, mail)
+            resultado =[]  
+            edad=self.calcular_edad(nacimiento.get())
+            print(edad)
+            print(edad[0], " años") 
+            validacion = validar_datos(nombre, apellido, curso, documento, domicilio, telefono, nacimiento, mail, edad[0])
                        
             if validacion is not None: 
                 app.graf=False
@@ -311,7 +316,8 @@ class Abmc():
                 alumno.save()
                 resultado, documentos = self.alumnos_cursos(app)
                 app.graf =True
-                                    
+                self.notificar(nombre.get(), apellido.get(), documento.get())
+                    
                 return "Se ha ingresado el alumno: "+nombre.get()+" "+apellido.get()+",DNI "+documento.get(), resultado
                             
         
@@ -347,7 +353,7 @@ class Abmc():
                     superior += 1
                 if fila.curso =="integracion":
                     integracion += 1
-            #print("egb: ", egb, "cfi", cfi, "superior", superior, "integracion", integracion)
+                print(type(fila),fila.apellido.lower())
             app.graf=True
             app.tamano= [egb, cfi, superior, integracion]
             return resultado, documentos
@@ -416,8 +422,12 @@ class Abmc():
                     - resultado (list): Una lista con todos los datos en la DB para actualizar el treeview.                
             """
             resultado =[]   
-            validacion = validar_datos(nombre, apellido, curso, documento, domicilio, telefono, nacimiento, mail)
-                       
+            edad=self.calcular_edad(nacimiento.get())
+            print(edad)
+            print(edad[0], " años")
+            validacion = validar_datos(nombre, apellido, curso, documento, domicilio, telefono, nacimiento, mail, edad[0])
+            #print("VALIDACION",validacion)
+            
             
             if validacion is not None: 
                 app.graf=False
@@ -434,6 +444,7 @@ class Abmc():
                         
             return "Se han modificado los datos de: "+nombre.get()+" "+apellido.get()+",DNI "+documento.get(), resultado
 
+       
         
         def consultar(self, treeview, app):
             """
@@ -491,7 +502,8 @@ class Abmc():
             if (edad_m<0):
                 edad_m+=12
                 edad_y-=1
-            edad= f"{edad_y} años, {edad_m} meses, {edad_d} días"
+            #edad= f"{edad_y} años, {edad_m} meses, {edad_d} días"
+            edad= (edad_y, edad_m, edad_d)
             print("EDAD", fecha," ", edad)
             return edad
 

@@ -8,7 +8,7 @@ Esta dividida en MVC
 from tkinter import Tk 
 from modelo import egb, cfi, superior, integracion
 from vista import Ventanita
-
+import observador
 
 class Controler:
 
@@ -46,6 +46,8 @@ class Controler:
         self.ventana=ventana
         self.objeto_vista = Ventanita(self.ventana, self.nombres, self.colores, self.tamano)
         
+
+        self.el_observador= observador.ConcreteObserverA(self.objeto_vista.objeto_base)
 
 if __name__ == "__main__":
     

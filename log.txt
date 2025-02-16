@@ -67,22 +67,35 @@ SE DIO DE BAJA AL ALUMNO ttr rerre con DNI: 44435555 2025-01-11 08:39:17.535217
 SE DIO DE BAJA AL ALUMNO TTTTT TTTT con DNI: 44466666 2025-01-11 08:42:21.031089
 SE DIO DE BAJA AL ALUMNO Eluney Celeste Furnari Acosta con DNI: 54102122 2025-01-11 08:42:32.855909
 Error:  El nombre y el apellido solo debe contener letras:  Se intento ingresar el alumno:  Eluney Celeste33   Furnari Acosta  con DNI:  54102135   2025-01-11 08:46:52.997640
-Error:   El nombre y el apellido solo debe contener letras:  Se intento modificar el alumno:  Eluney Celeste33   Furnari Acosta  con DNI:  54102135 2025-01-11 08:47:13.300854
-Error:  Por favor debe llenar todos los entries. Se intento ingresar el alumno:  eette   etettret  con DNI:  555   2025-01-11 08:49:17.213200
-Error:  El telefono debe ser un numero de 10 digitos Se intento ingresar el alumno:  eette   etettret  con DNI:  555   2025-01-11 08:49:31.989479
-Error:  El documento debe ser un numero de 8 digitos Se intento ingresar el alumno:  eette   etettret  con DNI:  555   2025-01-11 08:49:45.493646
-Error:  Debe ser un email valido: (usuario@dominio.com) Se intento ingresar el alumno:  eette   etettret  con DNI:  55544444   2025-01-11 08:49:55.237984
-Se ha ingresado el alumno: eette etettret,DNI 55544444 2025-01-11 08:50:05.672640
-Se han modificado los datos de: eette etettret,DNI 55544444 2025-01-11 08:56:04.991549
-Se ha ingresado el alumno: eette etettret,DNI 55544944 2025-01-11 15:22:37.559641
-Se ha intentado ingresar el documento que ya estaba en la base de datos 55544944 correspondiente al alumno SARGENT  PEPPER el 2025-01-11 15:23:27.958679
-Se ha ingresado el alumno: SARGENT PEPPER,DNI 55544977 2025-01-11 15:23:53.494509
-SE DIO DE BAJA AL ALUMNO eette etettret con DNI: 55544944 2025-01-11 15:25:49.363821
-SE DIO DE BAJA AL ALUMNO eette etettret con DNI: 55544999 2025-01-11 15:26:04.235244
-Se han modificado los datos de: eette etettret,DNI 55544444 2025-01-11 15:26:17.476920
-Se ha ingresado el alumno: PEPE GRILLO,DNI 55544411 2025-01-11 15:30:57.798600
-Se ha ingresado el alumno: RENATA RENAN,DNI 55544455 2025-01-11 15:33:07.125916
-Se ha ingresado el alumno: SERGIO TORRES,DNI 55544333 2025-01-11 15:35:08.357694
-Se ha ingresado el alumno: SERGIO TORRES,DNI 55544111 2025-01-11 15:36:55.245526
 
-Se han modificado los datos de: RENATA RENAN,DNI 55544455 2025-02-16 16:16:42.504509
+Se han modificado los datos de: SARGENT PEPPER,DNI 55544977 2025-01-12 13:29:14.882435
+Se han modificado los datos de: SARGENT PEPPER,DNI 55544977 2025-01-12 13:30:13.154403
+Se han modificado los datos de: RENATA RENAN,DNI 55544455 2025-01-12 13:37:19.483829
+SE DIO DE BAJA AL ALUMNO RENATA RENAN con DNI: 55544455 2025-01-12 22:26:58.029052
+Por favor seleccione una fila para eliminar. 2025-01-12 22:27:09.764873
+Error:   Por favor debe llenar todos los entries. Se intento modificar el alumno:  SERGIO   TORRES  con DNI:  55544111 2025-01-13 09:55:57.148173
+Se han modificado los datos de: SERGIO TORRES,DNI 55544111 2025-01-13 09:56:05.698250
+Error:   Elija egb, cfi, superior, integracion o ex:  Se intento modificar el alumno:  SERGIO   TORRES  con DNI:  55544111 2025-01-13 09:58:28.987772
+Error:   Elija egb, cfi, superior, integracion o ex:  Se intento modificar el alumno:  SERGIO   TORRES  con DNI:  55544111 2025-01-13 09:58:51.153741
+Error:   CURSO: Elija egb, cfi, superior, integracion o ex  Se intento modificar el alumno:  SERGIO   TORRES  con DNI:  55544111 2025-01-13 09:59:44.051475
+Se han modificado los datos de: SERGIO TORRES,DNI 55544111 2025-01-13 09:59:52.428052
+Se han modificado los datos de: PEPE GRILLO,DNI 55544411 2025-01-13 20:28:30.006584
+Se ha ingresado el alumno: SERGIO TORRES,DNI 55544444 2025-01-13 20:56:27.010785
+Se han modificado los datos de: SERGIO TORRES,DNI 55544444 2025-01-13 22:53:39.191749
+Se han modificado los datos de: Mar�a Jos� Domecq Dom�nguez,DNI 42250777 2025-01-13 22:54:09.955987
+Se han modificado los datos de: Benjam�n Rodr�guez,DNI 50137355 2025-01-13 22:55:55.245211
+Error:   La edad debe ser mayor que 5 a�os Se intento modificar el alumno:  SERGIO   TORRES  con DNI:  55544444 2025-01-13 23:00:53.279326
+Se han modificado los datos de: SERGIO TORRES,DNI 55544444 2025-01-13 23:01:18.042712
+Se ha ingresado el alumno: SERGIO TORRES,DNI 55544000 2025-01-13 23:03:58.401975
+SE DIO DE BAJA AL ALUMNO SERGIO TORRES con DNI: 55544000 2025-01-13 23:04:08.943250
+SE DIO DE BAJA AL ALUMNO SERGIO TORRES con DNI: 55544444 2025-01-13 23:04:14.483041
+Error:   La edad debe ser mayor que 5 a�os Se intento modificar el alumno:  SERGIO   TORRES  con DNI:  55544111 2025-01-13 23:04:36.958355
+Error:   La edad debe ser mayor que 5 a�os Se intento modificar el alumno:  SERGIO   TORRES  con DNI:  55544111 2025-01-13 23:04:44.757530
+Error:   La edad debe ser mayor que 5 a�os Se intento modificar el alumno:  SERGIO   TORRES  con DNI:  55544111 2025-01-13 23:04:57.326438
+Error:   La edad debe ser mayor que 5 a�os Se intento modificar el alumno:  SERGIO   TORRES  con DNI:  55544111 2025-01-13 23:05:06.678335
+Error:   La edad debe ser mayor que 5 a�os Se intento modificar el alumno:  SERGIO   TORRES  con DNI:  55544111 2025-01-13 23:05:13.501891
+Error:   La edad debe ser mayor que 5 a�os Se intento modificar el alumno:  SERGIO   TORRES  con DNI:  55544111 2025-01-13 23:05:34.974356
+Se han modificado los datos de: SERGIO TORRES,DNI 55544111 2025-01-13 23:06:04.779792
+
+Se han modificado los datos de: SARGENT PEPPER,DNI 55544977 2025-02-16 16:27:20.902433
+Se han modificado los datos de: SARGENT PEPPER,DNI 55544977 2025-02-16 16:27:33.111544

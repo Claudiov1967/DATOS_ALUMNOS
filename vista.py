@@ -481,7 +481,7 @@ class Ventanita():
             None
         """
         retorno, edad = self.objeto_base.consultar(self.tree, self)
-        self.edad_val.set(edad)
+        self.edad_val.set(f"{edad[0]} años, {edad[1]} meses, {edad[2]} días")
         showinfo("INFORMACION", retorno)
         return
 
