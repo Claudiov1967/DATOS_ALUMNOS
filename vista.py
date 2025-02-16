@@ -7,41 +7,46 @@ import tkinter as tk
 from tkinter.messagebox import showinfo, showwarning
 from datetime import datetime
 import random
-from modelo import Abmc, Alumno
+from modelo import Abmc#, Alumno2
 from modelo import egb, cfi, superior, integracion
 
 
 
 class Ventanita():
 
-    def __init__(self, window, nombres, colores, tamaño, graf=True):
+    # EL CONSTRUCTOR TIENE PARAMETROS DE LA VENTANA, Y LOS DEMAS SON PARA EL GRAFICO DE ALUMNOS
+    def __init__(self, window, nombres, colores, tamano, graf=True):
         self.root = window
         self.nombres = nombres
         self.colores = colores
-        self.tamaño = tamaño
+        self.tamano = tamano
         self.graf = graf
 
+        self.root.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13), weight=1)
+        self.root.grid_columnconfigure((0, 1, 2, 3, 4, 5, 6, 7), weight=1)
+        pad_x = 10
+        pad_y = 5
         self.root.title("SISTEMA DE GESTION DE DATOS")
 
         # color fondo de la grilla de la ventana root
-        self.root.configure(bg="#2F4F4F", padx=20, pady=20)
+        self.root.configure(bg="#2F4F4F", padx=pad_x, pady=pad_y)
 
         # Titulo principal de la ventana         
         self.titulo = Label(self.root, text="SISTEMA DE GESTION DE DATOS E INGRESOS DE ALUMNOS",
-                        bg="green", fg="thistle1", height=1, width= 60,font=("Garamond", 14,"bold"))
-        self.titulo.grid(row=0, column=0, columnspan=6, padx=1, pady=1, sticky='w')
+                        bg="green", fg="thistle1", height=1, width= 60,font=("Garamond", 15,"bold"))
+        self.titulo.grid(row=0, column=0, columnspan=8, padx=pad_x, pady=pad_y, sticky='ew')
 
         ###################
-        # GRAFICO
+        # GRAFICO ALUMNOS POR CURSO
         # crear un frame dentro de la ventana
         self.frame = Frame(self.root, bg='green')
         self.frame.grid(column=4, row=1, rowspan=5)
 
         # Crear la figura y los ejes
-        self.fig, self.ax = plt.subplots(dpi=80, figsize=(4, 2), facecolor="green")
+        self.fig, self.ax = plt.subplots(dpi=80, figsize=(6, 3), facecolor="green")
 
         # Crear un grafico de barras en el primer eje
-        self.ax.bar(self.nombres, self.tamaño, color= self.colores)
+        self.ax.bar(self.nombres, self.tamano, color= self.colores)
         self.ax.set_title('ALUMNOS POR CURSO')
         print("ax: ", self.ax)
 
@@ -50,30 +55,32 @@ class Ventanita():
         self.canvas.draw()
         self.canvas.get_tk_widget().grid(column=4, row=1, rowspan=5, columnspan=2)
 
-        #######################################
+        ######################################################################
         # widgets con los nombres de los campos a conpletar por cada registro
-        self.nombre = Label(self.root, text="Nombre/s", font=("Candara",12), width=15)
-        self.nombre.grid(row=1, column=0, sticky='w')
-        self.apellido=Label(self.root, text="Apellido/s", font=("Candara",12),width=15)
-        self.apellido.grid(row=2, column=0, sticky='w')
-        self.curso=Label(self.root, text="Curso      ", font=("Candara",12),width=15)
-        self.curso.grid(row=3, column=0, sticky='w')
-        self.documento=Label(self.root, text="Documento", font=("Candara",12), width=15)
-        self.documento.grid(row=4, column=0, sticky='w')
-        self.domicilio=Label(self.root, text="Domicilio", font=("Candara",12), width=15)
-        self.domicilio.grid(row=5, column=0, sticky='w')
-        self.telefono=Label(self.root, text="Telefono", font=("Candara",12), width=15)
-        self.telefono.grid(row=6, column=0, sticky='w')
-        self.nacimiento= Label(self.root, text="F. Nac.", font=("Candara",12), width=15)
-        self.nacimiento.grid(row=7, column=0, sticky='w')
-        self.edad= Label(self.root, text="Edad", font=("Candara",12), width=15)
-        self.edad.grid(row=8, column=0, sticky='w',pady=(5,))
-        self.edad2= Label(self.root, text="", font=("Candara",12), width=20,bg="lightgreen")
-        self.edad2.grid(row=8, column=1, padx=(150,),pady=(5,))
-        
+        self.nombre = Label(self.root, text="Nombre/s", font=("Candara",13), width=15)
+        self.nombre.grid(row=1, column=0, padx=pad_x, pady=pad_y, sticky='w')
+        self.apellido =Label(self.root, text="Apellido/s", font=("Candara",13),width=15)
+        self.apellido.grid(row=2, column=0,padx=pad_x, pady=pad_y,  sticky='w')
+        self.curso =Label(self.root, text="Curso      ", font=("Candara",13),width=15)
+        self.curso.grid(row=3, column=0, padx=pad_x, pady=pad_y,  sticky='w')
+        self.documento =Label(self.root, text="Documento", font=("Candara",13), width=15)
+        self.documento.grid(row=4, column=0,padx=pad_x, pady=pad_y,  sticky='w')
+        self.domicilio =Label(self.root, text="Domicilio", font=("Candara",13), width=15)
+        self.domicilio.grid(row=5, column=0, padx=pad_x, pady=pad_y,  sticky='w')
+        self.telefono =Label(self.root, text="Telefono", font=("Candara",13), width=15)
+        self.telefono.grid(row=6, column=0,padx=pad_x, pady=pad_y, sticky='w')
+        self.nacimiento = Label(self.root, text="F. Nac.", font=("Candara",13), width=15)
+        self.nacimiento.grid(row=7, column=0,padx=pad_x, pady=pad_y, sticky='w')
+        self.mail = Label(self.root, text="Email", font=("Candara",13), width=15)
+        self.mail.grid(row=8, column=0, padx=pad_x, pady=pad_y, sticky="w")
+        self.edad = Label(self.root, text="Edad", font=("Candara",13), width=15)
+        self.edad.grid(row=9, column=0,padx=pad_x, pady=pad_y, sticky='w')
+        self.edad2 = Label(self.root, text="xx", font=("Candara",13), width=25,bg="lightgreen")
+        self.edad2.grid(row=9, column=1,padx=pad_x, pady=pad_y) 
+        self.edad2 = Label(self.root, text="Desarrollado por Claudio Valko", font=("Candara",13), width=25,bg="white")
+        self.edad2.grid(row=16, column=5,padx=pad_x, pady=pad_y) 
 
-
-        # Variables campos de Entrada
+        ###  VARIABLES CAMPO DE ENTRADA TKINTER ##########################
         (
         self.nombre_val, 
         self.apellido_val, 
@@ -81,37 +88,41 @@ class Ventanita():
         self.documento_val, 
         self.domicilio_val, 
         self.tel_val, 
-        self.nac_val
-        ) = (StringVar(), StringVar(), StringVar(), StringVar(), StringVar(), StringVar(), StringVar())
+        self.nac_val,
+        self.mail_val
+        ) = (StringVar(), StringVar(), StringVar(), StringVar(), StringVar(), StringVar(), StringVar(), StringVar())
 
-        w_ancho = 20
+        w_ancho = 25
 
-        entrada1 = Entry(self.root, textvariable = self.nombre_val, width = w_ancho,font=("Candara",12)) 
-        entrada1.grid(row = 1, column = 1)
-        entrada2 = Entry(self.root, textvariable = self.apellido_val, width = w_ancho, font=("Candara",12)) 
-        entrada2.grid(row = 2, column = 1)
-        entrada3 = ttk.Combobox(self.root, textvariable = self.curso_val, width = w_ancho, font=("Candara",12)) 
-        entrada3.grid(row = 3, column = 1)
+        entrada1 = Entry(self.root, textvariable = self.nombre_val, width = w_ancho,font=("Candara",13)) 
+        entrada1.grid(row = 1, column = 1,padx=pad_x, pady=pad_y)
+        entrada2 = Entry(self.root, textvariable = self.apellido_val, width = w_ancho, font=("Candara",13)) 
+        entrada2.grid(row = 2, column = 1, padx=pad_x, pady=pad_y)
+        entrada3 = ttk.Combobox(self.root, textvariable = self.curso_val, width = w_ancho, font=("Candara",13)) 
+        entrada3.grid(row = 3, column = 1, padx=pad_x, pady=pad_y)
         entrada3['values'] = ('egb',  
                                 'cfi', 
                                 'superior', 
                                 'integracion', 
                                 'ex'
                                 ) 
-        entrada4 = Entry(self.root, textvariable = self.documento_val, width = w_ancho, font=("Candara",12)) 
-        entrada4.grid(row = 4, column = 1)
-        entrada5 = Entry(self.root, textvariable = self.domicilio_val, width = w_ancho, font=("Candara",12)) 
-        entrada5.grid(row = 5, column = 1)
-        entrada6 = Entry(self.root, textvariable = self.tel_val, width = w_ancho, font=("Candara",12)) 
-        entrada6.grid(row = 6, column = 1)
-        entrada7 = Entry(self.root, textvariable = self.nac_val, width = w_ancho, font=("Candara",12)) 
-        entrada7.grid(row = 7, column = 1)
+        entrada4 = Entry(self.root, textvariable = self.documento_val, width = w_ancho, font=("Candara",13)) 
+        entrada4.grid(row = 4, column = 1, padx=pad_x, pady=pad_y)
+        entrada5 = Entry(self.root, textvariable = self.domicilio_val, width = w_ancho, font=("Candara",13)) 
+        entrada5.grid(row = 5, column = 1, padx=pad_x, pady=pad_y)
+        entrada6 = Entry(self.root, textvariable = self.tel_val, width = w_ancho, font=("Candara",13)) 
+        entrada6.grid(row = 6, column = 1, padx=pad_x, pady=pad_y)
+        entrada7 = Entry(self.root, textvariable = self.nac_val, width = w_ancho, font=("Candara",13)) 
+        entrada7.grid(row = 7, column = 1, padx=pad_x, pady=pad_y)
+        entrada8 = Entry(self.root, textvariable = self.mail_val, width = w_ancho, font=("Candara",13)) 
+        entrada8.grid(row = 8, column = 1, padx=pad_x, pady=pad_y)
+
 
         ################################################
         # calendario
         self.calendario = Calendar(self.root, selectmode="day", background="green",selectbackground="black", normalbackground="#00ff40",
-                                weekendbackground="#00ff40", othermonthbackground="#008040", othermonthwebackground="#008040", )
-        self.calendario.grid(row=1, column=2, rowspan=6)
+                                weekendbackground="#00ff40", othermonthbackground="#008040", othermonthwebackground="#008040",font=("Candara", 13) )
+        self.calendario.grid(row=1, column=2, rowspan=6, padx=pad_x, pady=pad_y)
         ################################################
         ###############################################
         # IMAGEN:logo (DEBE ESTAR EN LA MISMA CARPETA)
@@ -120,7 +131,7 @@ class Ventanita():
         image1 = image1.resize((100, 100))
         self.image1 = ImageTk.PhotoImage(image1)
         self.label1 = tk.Label(image=self.image1)
-        self.label1.grid(row=1, column=5, rowspan=4)
+        self.label1.grid(row=1, column=5, rowspan=4, padx=pad_x, pady=pad_y)
 
         ##################################################
         # TREEVIEW
@@ -131,19 +142,20 @@ class Ventanita():
         # STYLE TREEVIEW
         self.style = ttk.Style()
         self.style.theme_use("alt")
-        # Cambiar la fuente y tamaño  Cambiar 'Arial' y '12' por la fuente y tamaño que desees
-        self.style.configure("Treeview",font=('Arial', 12), rowheight=30)
-        self.style.configure("Treeview.Heading",font=('Arial', 13, 'bold'))
+        # Cambiar la fuente y tamaño  Cambiar 'Arial' y '12' 
+        self.style.configure("Treeview",font=('Candara', 13), rowheight=30)
+        self.style.configure("Treeview.Heading",font=('Candara', 13, 'bold'))
         
-        self.tree["columns"]=("col1", "col2", "col3", "col4", "col5", "col6", "col7")
+        self.tree["columns"]=("col1", "col2", "col3", "col4", "col5", "col6", "col7","col8")
         self.tree.column("#0", width=70, minwidth=50)
         self.tree.column("col1", width=200, minwidth=80)
         self.tree.column("col2", width=200, minwidth=80)
         self.tree.column("col3", width=120, minwidth=80)
         self.tree.column("col4", width=120, minwidth=80)
         self.tree.column("col5", width=300, minwidth=80)
-        self.tree.column("col6", width=200, minwidth=80)
-        self.tree.column("col7", width=150, minwidth=80)
+        self.tree.column("col6", width=140, minwidth=80)
+        self.tree.column("col7", width=120, minwidth=80)
+        self.tree.column("col8", width=240, minwidth=80)
         self.tree.heading("#0", text="ID")
         self.tree.heading("col1", text="NOMBRE")
         self.tree.heading("col2", text="APELLIDO")
@@ -151,8 +163,9 @@ class Ventanita():
         self.tree.heading("col4", text="DOCUMENTO")
         self.tree.heading("col5", text="DOMICILIO")
         self.tree.heading("col6", text="TELEFONO")
-        self.tree.heading("col7", text="F. NACIMIENTO")
-        self.tree.grid(row=14, column=0, columnspan=6)
+        self.tree.heading("col7", text="F. NACIM.")
+        self.tree.heading("col8", text="EMAIL")
+        self.tree.grid(row=15, column=0, columnspan=6, padx=pad_x, pady=pad_y)
 
         
         
@@ -160,24 +173,24 @@ class Ventanita():
         # BOTONES DE CONTROL
         ##################################
         
-        boton_alta=Button(self.root, text="Alta", command=self.show_alta, font=("Candara",12), width=15)
-        boton_alta.grid(row=11, column=0)
+        boton_alta =Button(self.root, text="ALTA", command=self.show_alta, font=("Candara",13), width=15)
+        boton_alta.grid(row=12, column=0, padx=pad_x, pady=pad_y)
         
-        boton_borrar=Button(self.root, text="Borrar", command=self.show_borrar, font=("Candara",12), width=15)
-        boton_borrar.grid(row=12, column=0)
+        boton_borrar =Button(self.root, text="BORRAR", command=self.show_borrar, font=("Candara",13), width=15)
+        boton_borrar.grid(row=13, column=0, padx=pad_x, pady=pad_y)
         
-        boton_modificar=Button(self.root, text="Modificar", command=self.show_modificar, font=("Candara",12), width=15)
-        boton_modificar.grid(row=12, column=1)
+        boton_modificar =Button(self.root, text="MODIFICAR", command=self.show_modificar, font=("Candara",13), width=15)
+        boton_modificar.grid(row=13, column=1, padx=pad_x, pady=pad_y)
         
-        boton_consultar=Button(self.root, text="Consultar", command=self.show_consultar, font=("Candara",12), width=15)
-        boton_consultar.grid(row=11, column=1)
+        boton_consultar =Button(self.root, text="CONSULTAR", command=self.show_consultar, font=("Candara",13), width=15)
+        boton_consultar.grid(row=12, column=1, padx=pad_x, pady=pad_y)
 
-        boton_fecha = Button(self.root, text="ACEPTAR", command=lambda: self.elegir_fecha(), bg="black", fg="white", font=("Candara",12), width=15)
-        boton_fecha.grid(row=11, column=2)
+        boton_fecha = Button(self.root, text="ACEPTAR", command=lambda: self.elegir_fecha(), bg="white", fg="black", font=("Candara",13), width=15)
+        boton_fecha.grid(row=7, column=2, padx=pad_x, pady=pad_y)
 
         boton_sorpresa = Button(self.root, text="SORPRESA", command=lambda:self.cambiar_colores(), bg="white",
-                                fg="black", font=("Candara",12), width=15)
-        boton_sorpresa.grid(row=10, column=5)
+                                fg="black", font=("Candara",13), width=15)
+        boton_sorpresa.grid(row=11, column=5, padx=pad_x, pady=pad_y)
 
     def cambiar_colores(self,):
         colores= ['snow', 'old lace', 'linen', 'antique white', 'papaya whip', 'blanched almond', 'bisque',
@@ -206,7 +219,7 @@ class Ventanita():
         fecha_formateada = fecha_obj.strftime("%d/%m/%y")
         self.nac_val.set(fecha_formateada)
 
-
+    ## LLAMA A ALTA Y RETORNA LO QUE SE DEBE MOSTRAR EN CONSOLA Y UNA LISTA CON ITEMS PARA MODIFICAR EL TREEVIEW
     def show_alta(self,):  
         alumno = Abmc(
         self.nombre_val.get(), 
@@ -215,15 +228,16 @@ class Ventanita():
         self.documento_val.get(), 
         self.domicilio_val.get(), 
         self.tel_val.get(), 
-        self.nac_val.get()
+        self.nac_val.get(),
+        self.mail_val.get()
         )
   
         retorno, resultado = alumno.alta(self)
-        print(self.graf, self.tamaño)
+        print(self.graf, self.tamano)
            
         if self.graf:
             self.actualizar_treeview(resultado)
-            self.actualizar_grafico(self.tamaño)
+            self.actualizar_grafico(self.tamano)
             self.nombre_val.set("")
             self.apellido_val.set("")
             self.curso_val.set("")
@@ -232,6 +246,7 @@ class Ventanita():
             self.tel_val.set("")
             self.nac_val.set("")
             self.edad2.config(text="") 
+            self.mail_val.set("")
             showinfo("INFORMACION", retorno)
         else:
             showwarning("ADVERTENCIA",retorno )
@@ -243,11 +258,11 @@ class Ventanita():
         
         for fila in resultado:
             print(fila)
-            self.tree.insert("", 0, text=fila[0], values=(fila[1], fila[2], fila[3], fila[4], fila[5], fila[6], fila[7]))
+            self.tree.insert("", 0, text=fila[0], values=(fila[1], fila[2], fila[3], fila[4], fila[5], fila[6], fila[7] ,fila[8]))
 
     def actualizar_grafico(self,tamaño):
         print("ax:",self.ax)
-        print(self.tamaño)
+        print(self.tamano)
         # Limpiar el gráfico actual
         self.ax.clear()
         self.ax.bar(self.nombres, tamaño, color=self.colores)
@@ -262,11 +277,12 @@ class Ventanita():
             self.documento_val.get(),
             self.domicilio_val.get(),
             self.tel_val.get(),
-            self.nac_val.get()
+            self.nac_val.get(),
+            self.mail_val.get()
             )
-        resultado= alumno.alumnos_cursos(self)
+        resultado, documentos= alumno.alumnos_cursos(self)
         self.actualizar_treeview(resultado)
-        self.actualizar_grafico(self.tamaño)
+        self.actualizar_grafico(self.tamano)
         print(self.graf)
 
     def show_borrar(self,):
@@ -277,12 +293,14 @@ class Ventanita():
             self.documento_val.get(),
             self.domicilio_val.get(),
             self.tel_val.get(),
-            self.nac_val.get()
+            self.nac_val.get(),
+            self.mail_val.get()
+
             )
         retorno, resultado = alumno.borrar(self.tree, self)
-        print(self.graf, self.tamaño)
+        print(self.graf, self.tamano)
         if self.graf:
-            self.actualizar_grafico(self.tamaño)
+            self.actualizar_grafico(self.tamano)
             self.actualizar_treeview(resultado)
         showinfo("INFORMACION", retorno)
 
@@ -301,11 +319,12 @@ class Ventanita():
             self.documento_val.get(),
             self.domicilio_val.get(),
             self.tel_val.get(),
-            self.nac_val.get()
+            self.nac_val.get(),
+            self.mail_val.get()
             )
         retorno, resultado = alumno.modificar(item, self)  
         if self.graf:       
-            self.actualizar_grafico(self.tamaño)
+            self.actualizar_grafico(self.tamano)
             self.actualizar_treeview(resultado)
             self.nombre_val.set("")
             self.apellido_val.set("")
@@ -314,6 +333,7 @@ class Ventanita():
             self.domicilio_val.set("")
             self.tel_val.set("")
             self.nac_val.set("")
+            self.mail_val.set("")
             self.edad2.config(text="") 
             showinfo("INFORMACION", retorno)
         else:
@@ -332,10 +352,12 @@ class Ventanita():
             self.documento_val.get(),
             self.domicilio_val.get(),
             self.tel_val.get(),
-            self.nac_val.get()
+            self.nac_val.get(),
+            self.mail_val.get()
             )      
         retorno, edad = alumno.consultar(item, self) 
-        self.edad2.config(text=edad) 
+        print("WWWWWWWEDADWWWWWWWWWWWWWWWWWWW", edad)
+        self.edad2.config(text="24dias")
 
         showinfo("INFORMACION", retorno)
 
