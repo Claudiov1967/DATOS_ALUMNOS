@@ -4,24 +4,23 @@ Contiene la logica
 Interactua con la base de datos
 """
 from peewee import *
-import re
 from datetime import datetime
 import os
-import sys 
 from con_regex import validar_datos
 from observador import Subject
-
+from icecream import ic
 
 """
-variables para el grafico
-:egb: integer candidad de alumnos en el ciclo egb
-:cfi: integer candidad de alumnos en el ciclo cfi
-:superior: integer candidad de alumnos en el ciclo superior
-:integracion: integer candidad de alumnos en el ciclo integracion
-: graf: boolean True hay que actualizar el grafico
-variables ruta archivo log
-:BASE_DIR (str): Directorio base del archivo. 
-:ruta (str): Ruta completa del archivo log.
+Variables para el grafico
+:egb: int - Cantidad de alumnos en el ciclo EGB.
+:cfi: int - Candidad de alumnos en el ciclo CFI.
+:superior: int - Candidad de alumnos en el ciclo superior.
+:integracion: int Candidad de alumnos en el ciclo integracion.
+: graf: bool - True si hay que actualizar el grafico
+
+Variables para la ruta del archivo log
+:BASE_DIR: str - Directorio base del archivo. 
+:ruta: str - Ruta completa del archivo log.
 """
 egb, cfi, superior, integracion = 0, 0, 0, 0
 tamano = [egb, cfi, superior, integracion]
@@ -225,7 +224,6 @@ Returns:
 """
 
 
-# La clase Abmc es la que la encargada de administrar la comunicacion con la base de datos
 class Abmc(Subject):
           
         """
@@ -246,16 +244,16 @@ class Abmc(Subject):
                 Calcula la edad de una persona dada su fecha de nacimiento
 
         """
-        
+       
         @ingreso
         def alta(self, nombre, apellido, curso, documento, domicilio, telefono, nacimiento, mail,app):
                         
             """
             Da de alta un nuevo registro en la base de datos
-
-            Se hace un regex para validar cada uno de los campos ingresados.
-            Si alguno no valida, se retorna la información con el inconveniente 
-            para ser desplegado en pantalla.
+            Se llama al metodo calcular_edad, para pasar a validar_datos
+            Se llama al metodo validar_datos en con_regex
+            Se llama al metodo alumnos_cursos que busca todos los documentos en la base de datos y 
+                genera informacion para actualizar el treeview
 
             Args:
                 nombre (str): Nombre del alumno. 
@@ -275,13 +273,13 @@ class Abmc(Subject):
             """
             resultado =[]  
             edad=self.calcular_edad(nacimiento.get())
-            print(edad)
-            print(edad[0], " años") 
+            ic(edad)
+            ic(edad[0], " años") 
             validacion = validar_datos(nombre, apellido, curso, documento, domicilio, telefono, nacimiento, mail, edad[0])
                        
             if validacion is not None: 
                 app.graf=False
-                print("VALIDACION",validacion) 
+                ic("VALIDACION",validacion) 
                 return validacion 
             else:
                             
@@ -293,11 +291,11 @@ class Abmc(Subject):
                 # La funcion ingresar_documento, en caso de que el documento ya este en la base de datos
                 # dentro de la lista documentos, produce un RAISE y la cadena except lo registra en log
                 try:
-                    print("Intentando ingresar un documento...")
+                    ic("Intentando ingresar un documento...")
                     evento =RegistroLog(nombre.get(), apellido.get(), documento.get(), datetime.now())
                     evento.ingresar_documento(documentos)
                 except RegistroLog as log:
-                    print("Se ha producido un error al ingresar el documento.")
+                    ic("Se ha producido un error al ingresar el documento.")
                     log.registrar_error()  
                     return "El DNI ya se encuentra  EN LA DB", resultado
 
@@ -320,7 +318,8 @@ class Abmc(Subject):
                     
                 return "Se ha ingresado el alumno: "+nombre.get()+" "+apellido.get()+",DNI "+documento.get(), resultado
                             
-        
+    
+                    
         def alumnos_cursos(self,app):
             """
             Crea dos listas
@@ -352,8 +351,7 @@ class Abmc(Subject):
                 if fila.curso =="superior":
                     superior += 1
                 if fila.curso =="integracion":
-                    integracion += 1
-                print(type(fila),fila.apellido.lower())
+                    integracion += 1                
             app.graf=True
             app.tamano= [egb, cfi, superior, integracion]
             return resultado, documentos
@@ -401,8 +399,7 @@ class Abmc(Subject):
             Modifica un registro en la base de datos
 
             Recoge los datos del registro seleccionado en el treeview y actualiza los campos correspondientes 
-            en la base de datos. Luego actualiza la lista de alumnos y los datos
-            gráficos en la interfaz.
+            en la base de datos. Luego actualiza la lista de alumnos y los datos de la interfaz
 
             Args:
                 item (dict): Lista con los valores de una fila de un registro del treeview. 
@@ -423,11 +420,10 @@ class Abmc(Subject):
             """
             resultado =[]   
             edad=self.calcular_edad(nacimiento.get())
-            print(edad)
+            ic(edad)
             print(edad[0], " años")
             validacion = validar_datos(nombre, apellido, curso, documento, domicilio, telefono, nacimiento, mail, edad[0])
-            #print("VALIDACION",validacion)
-            
+                        
             
             if validacion is not None: 
                 app.graf=False
@@ -444,8 +440,7 @@ class Abmc(Subject):
                         
             return "Se han modificado los datos de: "+nombre.get()+" "+apellido.get()+",DNI "+documento.get(), resultado
 
-       
-        
+               
         def consultar(self, treeview, app):
             """
             Consulta un registro en la base de datos y despliega los datos en los Entries
@@ -476,9 +471,10 @@ class Abmc(Subject):
             app.mail_val.set(item['values'][7]) 
             app.graf=False   
             edad= self.calcular_edad(item['values'][6])
-            print(edad)
+            ic(edad)
             return "SE CONSULTO", edad
         
+
         def calcular_edad(self,fecha):
             
             """

@@ -11,9 +11,15 @@ import tkinter as tk
 from tkinter.messagebox import showinfo, showwarning
 from datetime import datetime
 import random
-from modelo import Abmc, Alumno2
+from modelo import Abmc 
 from modelo import egb, cfi, superior, integracion
-import sys 
+import os
+from pathlib import Path
+import threading
+import subprocess
+import sys
+from icecream import ic
+
 
 
 class Ventanita():
@@ -69,11 +75,48 @@ class Ventanita():
         Constructor de la clase Ventanita.
         
         Args:
-            window (Tk): La ventana gráfica.
-            nombres (list): Lista con nombres de las barras del gráfico.
-            colores (list): Lista con los colores de las barras del gráfico.
-            tamano (list): Lista con la cantidad de alumnos en cada curso.
-            graf (bool): Si es True se actualiza el gráfico. Por defecto es True.
+        window (Tk): La ventana gráfica.
+        nombres (list): Lista con nombres de las barras del gráfico.
+        colores (list): Lista con los colores de las barras del gráfico.
+        tamano (list): Lista con la cantidad de alumnos en cada curso.
+        graf (bool): Si es True se actualiza el gráfico. Por defecto es True.
+
+    Attributes:
+        root (Tk): La ventana principal de la aplicación.
+        nombres (list): Lista con nombres de las barras del gráfico.
+        colores (list): Lista con los colores de las barras del gráfico.
+        tamano (list): Lista con la cantidad de alumnos en cada curso.
+        graf (bool): Indica si se debe actualizar el gráfico.
+        nombre_val (StringVar): Variable para el nombre del alumno.
+        apellido_val (StringVar): Variable para el apellido del alumno.
+        curso_val (StringVar): Variable para el curso del alumno.
+        documento_val (StringVar): Variable para el documento del alumno.
+        domicilio_val (StringVar): Variable para el domicilio del alumno.
+        tel_val (StringVar): Variable para el teléfono del alumno.
+        nac_val (StringVar): Variable para la fecha de nacimiento del alumno.
+        mail_val (StringVar): Variable para el email del alumno.
+        edad_val (StringVar): Variable para la edad del alumno.
+        objeto_base (Abmc): Instancia de la clase Abmc.
+        raiz (Path): Directorio base del archivo.
+        ruta_server (str): Ruta completa del archivo del servidor.
+        theproc (subprocess.Popen): Proceso del servidor
+        titulo (Label): Instancia de la clase Label que muestra el título de la aplicación.
+        frame (Frame): Instancia de la clase Frame que actúa como contenedor para otros widgets.
+        canvas (FigureCanvasTkAgg): Instancia de la clase FigureCanvasTkAgg para mostrar gráficos.
+        tree (ttk.Treeview): Instancia de la clase Treeview para mostrar datos en forma de tabla.
+        style (ttk.Style): Instancia de la clase Style para personalizar la apariencia de los widgets.
+        calendario (Calendar): Instancia de la clase Calendar para seleccionar fechas.
+        boton_alta (Button): Botón para dar de alta un nuevo registro.
+        boton_borrar (Button): Botón para borrar un registro existente.
+        boton_modificar (Button): Botón para modificar un registro existente.
+        boton_consultar (Button): Botón para consultar registros.
+        boton_fecha (Button): Botón para aceptar la fecha seleccionada.
+        boton_sorpresa (Button): Botón para cambiar colores de la interfaz.
+        boton_lanzar (Button): Botón para lanzar el servidor.
+        boton_apagar (Button): Botón para apagar el servidor.
+        image1 (ImageTk.PhotoImage): Instancia de la clase PhotoImage para mostrar una imagen.
+        label1 (Label): Instancia de la clase Label que muestra la imagen
+                
         """
         self.root = window
         self.nombres = nombres
@@ -90,6 +133,10 @@ class Ventanita():
         self.mail_val= StringVar()
         self.edad_val=StringVar()
         self.objeto_base = Abmc()
+
+        self.raiz = Path(__file__).resolve().parent
+        self.ruta_server = os.path.join(self.raiz, 'servidor1.py')
+        self.theproc = None
 
         # Configuracion de la ventana principal
         self.root.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13), weight=1)
@@ -111,8 +158,7 @@ class Ventanita():
         self.fig, self.ax = plt.subplots(dpi=80, figsize=(4, 2), facecolor="green")
         self.ax.bar(self.nombres, self.tamano, color= self.colores)
         self.ax.set_title('ALUMNOS POR CURSO')
-        #print("ax: ", self.ax)
-
+        
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.frame)
         self.canvas.draw()
         self.canvas.get_tk_widget().grid(column=4, row=1, rowspan=4, columnspan=2)
@@ -237,6 +283,12 @@ class Ventanita():
         boton_sorpresa = Button(self.root, text="SORPRESA", command=lambda:self.cambiar_colores(), bg="white",
                                 fg="black", font=("Candara",12), width=15)
         boton_sorpresa.grid(row=11, column=5, padx=pad_x, pady=pad_y)
+
+        boton_lanzar = Button(self.root, text="LANZAR", command=lambda: self.try_connection(), bg="white", fg="black", font=("Candara",12), width=15)
+        boton_lanzar.grid(row=9, column=3, padx=pad_x, pady=pad_y)
+
+        boton_apagar = Button(self.root, text="APAGAR", command=lambda: self.apagar_servidor(), bg="white", fg="black", font=("Candara",12), width=15)
+        boton_apagar.grid(row=9, column=5, padx=pad_x, pady=pad_y)
         
     def cambiar_colores(self,):
         """
@@ -269,6 +321,7 @@ class Ventanita():
         color = random.choice(colores)
         self.root.configure(background=color)
 
+    
     def elegir_fecha(self,):
 
         """
@@ -283,11 +336,10 @@ class Ventanita():
             None: No retorna nada.        
         """
         self.nac_val.set("")
-        print("El dia elegido es: " + self.calendario.get_date())
+        ic("El dia elegido es: " + self.calendario.get_date())
         fecha = self.calendario.get_date()
         fecha_obj = datetime.strptime(fecha, "%m/%d/%y")  
         fecha_formateada = fecha_obj.strftime("%d/%m/%y")
-        #print("Fecha formateada:", fecha_formateada)
         self.nac_val.set(fecha_formateada)
 
     
@@ -387,7 +439,7 @@ class Ventanita():
         self.actualizar_treeview(resultado)
         self.actualizar_grafico(self.tamano)
         print(self.graf)
-
+        
     def show_borrar(self,):
 
         """
@@ -484,4 +536,69 @@ class Ventanita():
         self.edad_val.set(f"{edad[0]} años, {edad[1]} meses, {edad[2]} días")
         showinfo("INFORMACION", retorno)
         return
+    
+    def lanzar_servidor(self,var):
+        """
+    Lanza el servidor.
+
+    Llama al método `subprocess.Popen` para iniciar el servidor.
+    Muestra un mensaje de información si el servidor se lanza correctamente.
+    Muestra una advertencia si no se puede lanzar el servidor.
+
+    Args:
+        var (bool): Indica si se debe lanzar el servidor.
+
+    Returns:
+        None
+    """        
+        the_path =  self.ruta_server
+        print("VAR",var)
+        if var==True:
+            
+            self.theproc = subprocess.Popen([sys.executable, the_path])
+            showinfo("INFORMACION","SERVIDOR LANZADO")
+            ic("SERVIDOR LANZADO")
+            self.theproc.communicate()
+        else:
+            showwarning("ADVERTENCIA","NO SE PUDO LANZAR EL SERVIDOR") 
+            print("NO SE PUDO LANZAR EL SERVIDOR")    
+
+    
+    def apagar_servidor(self,):
+        """
+    Apaga el servidor.
+
+    Llama al método `kill` del proceso del servidor para detenerlo.
+    Muestra un mensaje de información si el servidor se apaga correctamente.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+        if self.theproc is not None:
+            self.theproc.kill()
+            showinfo("INFORMACION","SERVIDOR APAGADO")
+            ic("SERVIDOR APAGADO")        
+
+    def try_connection(self, ): 
+        """
+    Intenta conectar y lanzar el servidor.
+
+    Llama al método `lanzar_servidor` en un hilo separado.
+    Si el servidor ya está en ejecución, lo detiene antes de intentar lanzarlo de nuevo.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+        ic("lanzando servidor")
+        if self.theproc is not None:
+            self.theproc.kill()            
+            threading.Thread(target=self.lanzar_servidor, args=(True,), daemon=True).start()
+        else:
+            threading.Thread(target=self.lanzar_servidor, args=(True,), daemon=True).start()
 

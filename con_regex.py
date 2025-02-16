@@ -1,9 +1,31 @@
 import re
+""" 
+    Valida los datos ingresados para un alumno.
+
+    Este método utiliza expresiones regulares para validar los datos ingresados en los campos de nombre, apellido, curso, documento, domicilio, teléfono, nacimiento y mail. También verifica que la edad sea mayor a 5 años.
+
+    Args:
+        nombre (StringVar): Nombre del alumno.
+        apellido (StringVar): Apellido del alumno.
+        curso (StringVar): Curso al que concurre el alumno.
+        documento (StringVar): DNI del alumno.
+        domicilio (StringVar): Dirección del alumno.
+        telefono (StringVar): Teléfono del alumno.
+        nacimiento (StringVar): Fecha de nacimiento del alumno.
+        mail (StringVar): Email del alumno.
+        edad (int): Edad del alumno.
+
+    Returns:
+        tuple: Un tuple que contiene un string y una lista si hay errores de validación:
+            - mensaje (str): Mensaje de error de validación.
+            - datos (list): Lista con los datos ingresados.
+        None: Si todos los datos son válidos.
+    """
 
 
 def validar_datos(nombre, apellido, curso, documento, domicilio, telefono, nacimiento, mail,edad): 
    
-    resultado =[]      
+    #resultado =[]      
     values= ('egb','cfi','superior','integracion','ex')       
     ###############################  REGEX   ###################################
     # controla que en todos los entries se hayan ingresado datos
@@ -33,7 +55,7 @@ def validar_datos(nombre, apellido, curso, documento, domicilio, telefono, nacim
         print("Debe ser un email valido")
         #app.graf = False
         return "Debe ser un email valido: (usuario@dominio.com)", [nombre.get(),apellido.get(),curso.get(),documento.get()]
-    
+   
     # Validar el nombre y el apellido: se permiten letras mayusculas, minusculas, con acento y ñ
     patron = "^[a-zA-ZáéíóúñÑ ]+$"
     if not (re.match(patron, nombre.get()) and re.match(patron, apellido.get())):
@@ -45,6 +67,3 @@ def validar_datos(nombre, apellido, curso, documento, domicilio, telefono, nacim
         return "La edad debe ser mayor que 5 años",  [nombre.get(),apellido.get(),curso.get(),documento.get()]
     else:
         return None
-    
- 
-
