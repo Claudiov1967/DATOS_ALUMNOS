@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>modelo &#8212; MiProyecto 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for modelo</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Modelo de la Aplicacion</span>
+<span class="sd">Contiene la logica </span>
+<span class="sd">Interactua con la base de datos</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">peewee</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">con_regex</span> <span class="kn">import</span> <span class="n">validar_datos</span>
+<span class="kn">from</span> <span class="nn">observador</span> <span class="kn">import</span> <span class="n">Subject</span>
+<span class="kn">from</span> <span class="nn">icecream</span> <span class="kn">import</span> <span class="n">ic</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Variables para el grafico</span>
+
+<span class="sd">:egb: int - Cantidad de alumnos en el ciclo EGB.</span>
+
+<span class="sd">:cfi: int - Candidad de alumnos en el ciclo CFI.</span>
+
+<span class="sd">:superior: int - Candidad de alumnos en el ciclo superior.</span>
+
+<span class="sd">:integracion: int Candidad de alumnos en el ciclo integracion.</span>
+
+<span class="sd">: graf: bool - True si hay que actualizar el grafico</span>
+
+<span class="sd">Variables para la ruta del archivo log</span>
+
+<span class="sd">:BASE_DIR: str - Directorio base del archivo. </span>
+
+<span class="sd">:ruta: str - Ruta completa del archivo log.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">egb</span><span class="p">,</span> <span class="n">cfi</span><span class="p">,</span> <span class="n">superior</span><span class="p">,</span> <span class="n">integracion</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+<span class="n">tamano</span> <span class="o">=</span> <span class="p">[</span><span class="n">egb</span><span class="p">,</span> <span class="n">cfi</span><span class="p">,</span> <span class="n">superior</span><span class="p">,</span> <span class="n">integracion</span><span class="p">]</span>
+<span class="n">graf</span><span class="o">=</span> <span class="kc">False</span>
+<span class="n">BASE_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span>
+<span class="n">ruta</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s2">&quot;log.txt&quot;</span><span class="p">)</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">SqliteDatabase</span><span class="p">(</span><span class="s2">&quot;escuela.db&quot;</span><span class="p">)</span>
+<span class="c1"># Para conectar a una base de datos MySqL hasy que cambiar los comentarios</span>
+<span class="c1">#db = MySQLDatabase(database=&quot;escuela&quot;, user=&quot;root&quot;, password=&quot;&quot;, host=&quot;localhost&quot;,port=3306)</span>
+<span class="c1">#mysql_db = MySQLDatabase(&#39;escuela&#39;)</span>
+
+
+<div class="viewcode-block" id="ingreso">
+<a class="viewcode-back" href="../modelo.html#modelo.ingreso">[docs]</a>
+<span class="k">def</span> <span class="nf">ingreso</span><span class="p">(</span><span class="n">funcion</span><span class="p">):</span>    
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Decorador que registra la información sobre el ingreso de datos </span>
+<span class="sd">    en un archivo log. </span>
+
+<span class="sd">    Args: </span>
+<span class="sd">        funcion (function): La función a decorar. </span>
+
+<span class="sd">    Returns: </span>
+<span class="sd">        function: La función decorada. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">envoltura</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">funcion</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">cadena</span><span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">25</span><span class="p">]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ruta</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">log</span><span class="p">:</span>
+            
+            <span class="k">if</span> <span class="n">cadena</span> <span class="o">==</span><span class="s1">&#39;Se ha ingresado el alumno&#39;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="n">file</span><span class="o">=</span><span class="n">log</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;El DNI ya se encuentra  EN LA DB&#39;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Se intento ingresar un alumno con DNI ya existente en la base&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: &quot;</span><span class="p">,</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="s2">&quot;Se intento ingresar el alumno: &quot;</span><span class="p">,</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="s2">&quot; &quot;</span><span class="p">,</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="s2">&quot; con DNI: &quot;</span><span class="p">,</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="n">file</span><span class="o">=</span><span class="n">log</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">return</span> <span class="n">envoltura</span></div>
+
+
+<div class="viewcode-block" id="eliminacion">
+<a class="viewcode-back" href="../modelo.html#modelo.eliminacion">[docs]</a>
+<span class="k">def</span> <span class="nf">eliminacion</span><span class="p">(</span><span class="n">funcion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Decorador que registra la información sobre la eliminación de datos</span>
+<span class="sd">    en un archivo log. </span>
+
+<span class="sd">    Args: </span>
+<span class="sd">        funcion (function): La función a decorar. </span>
+
+<span class="sd">    Returns: </span>
+<span class="sd">        function: La función decorada. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">envoltura</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">funcion</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ruta</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">log</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="n">file</span><span class="o">=</span><span class="n">log</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">return</span> <span class="n">envoltura</span></div>
+
+
+<div class="viewcode-block" id="actualizacion">
+<a class="viewcode-back" href="../modelo.html#modelo.actualizacion">[docs]</a>
+<span class="k">def</span> <span class="nf">actualizacion</span><span class="p">(</span><span class="n">funcion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Decorador que registra la información sobre la actualización </span>
+<span class="sd">    de datos en un archivo log. </span>
+<span class="sd">    </span>
+<span class="sd">    Args: </span>
+<span class="sd">        funcion (function): La función a decorar. </span>
+
+<span class="sd">    Returns: </span>
+<span class="sd">        function: La función decorada. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">envoltura</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">funcion</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">cadena</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">27</span><span class="p">]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ruta</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">log</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cadena</span> <span class="o">==</span><span class="s2">&quot;Se han modificado los datos&quot;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="n">file</span><span class="o">=</span><span class="n">log</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error:  &quot;</span><span class="p">,</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="s2">&quot;Se intento modificar el alumno: &quot;</span><span class="p">,</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="s2">&quot; &quot;</span><span class="p">,</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="s2">&quot; con DNI: &quot;</span><span class="p">,</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="n">file</span><span class="o">=</span><span class="n">log</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">return</span> <span class="n">envoltura</span></div>
+
+
+
+<div class="viewcode-block" id="RegistroLog">
+<a class="viewcode-back" href="../modelo.html#modelo.RegistroLog">[docs]</a>
+<span class="k">class</span> <span class="nc">RegistroLog</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Clase para manejar excepciones de registro de logs. </span>
+<span class="sd">    Esta clase extiende la clase `Exception` para manejar los errores </span>
+<span class="sd">    relacionados con el registro de logs en el sistema.</span>
+<span class="sd"> </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">,</span> <span class="n">apellido</span><span class="p">,</span> <span class="n">documento</span><span class="p">,</span> <span class="n">fecha</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor de la clase RegistroLog.</span>
+<span class="sd">        Inicializa la clase RegistroLog con la información del alumno y la fecha.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            nombre (str): Nombre del alumno. </span>
+
+<span class="sd">            apellido (str): Apellido del alumno. </span>
+
+<span class="sd">            documento (str): DNI del alumno. </span>
+
+<span class="sd">            fecha (str): Fecha y hora en que se registra el error.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apellido</span> <span class="o">=</span> <span class="n">apellido</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">documento</span> <span class="o">=</span> <span class="n">documento</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fecha</span> <span class="o">=</span> <span class="n">fecha</span>
+
+<div class="viewcode-block" id="RegistroLog.registrar_error">
+<a class="viewcode-back" href="../modelo.html#modelo.RegistroLog.registrar_error">[docs]</a>
+    <span class="k">def</span> <span class="nf">registrar_error</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Registra un error en el archivo log.</span>
+
+<span class="sd">        Escribe un mensaje en el archivo log con la información del alumno </span>
+<span class="sd">        y la fecha del error.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ruta</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">log</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Se ha intentado ingresar el documento que ya estaba en la base de datos </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">documento</span><span class="si">}</span><span class="s2"> correspondiente al alumno </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nombre</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">apellido</span><span class="si">}</span><span class="s2"> el </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fecha</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">log</span><span class="p">)</span></div>
+
+ 
+<div class="viewcode-block" id="RegistroLog.ingresar_documento">
+<a class="viewcode-back" href="../modelo.html#modelo.RegistroLog.ingresar_documento">[docs]</a>
+    <span class="k">def</span> <span class="nf">ingresar_documento</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">documentos</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Verifica y registra el documento del alumno.</span>
+
+<span class="sd">        Este método verifica si el documento del alumno ya está en la lista</span>
+<span class="sd">        de documentos. </span>
+<span class="sd">        Si el documento ya existe, lanza una excepción </span>
+<span class="sd">        `RegistroLogError` con la información del alumno y la fecha actual.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            self: La instancia de la clase que llama al método. </span>
+
+<span class="sd">            documentos (list): Lista de documentos existentes.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RegistroLogError: Si el documento del alumno ya existe en la lista.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: No retorna nada.        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">documento</span> <span class="ow">in</span> <span class="n">documentos</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RegistroLog</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">apellido</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">documento</span><span class="p">,</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span></div>
+</div>
+
+
+   
+<div class="viewcode-block" id="BaseModel">
+<a class="viewcode-back" href="../modelo.html#modelo.BaseModel">[docs]</a>
+<span class="k">class</span> <span class="nc">BaseModel</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Clase BaseModel</span>
+<span class="sd">    </span>
+<span class="sd">    Clase base para definir los modelos de la base de datos</span>
+<span class="sd">    Todas las demás clases de modelos deben heredar de esta clase</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+
+<span class="sd">         Meta: Metaclase que define la base de datos a utilizar </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">database</span> <span class="o">=</span> <span class="n">db</span></div>
+
+
+<div class="viewcode-block" id="Alumno2">
+<a class="viewcode-back" href="../modelo.html#modelo.Alumno2">[docs]</a>
+<span class="k">class</span> <span class="nc">Alumno2</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Clase que representa a un alumno.</span>
+
+<span class="sd">    Esta clase define los atributos de un alumno que serian registrados </span>
+<span class="sd">    en la base de datos</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        nombre (Charfield): Nombre del alumno</span>
+
+<span class="sd">        apellido (Charfield): apellido del alumno</span>
+
+<span class="sd">        curso (Charfield): curso que concurre el alumno</span>
+
+<span class="sd">        documento (Charfield): DNI del alumno</span>
+
+<span class="sd">        domicilio (Charfield): domicilio del alumno</span>
+
+<span class="sd">        telefono (Charfield): teléfono del alumno</span>
+
+<span class="sd">        nacimiento (Charfield): fecha de nacimiento del alumno</span>
+
+<span class="sd">        mail (Charfield): correo electrónico del alumno    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nombre</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">apellido</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">curso</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">documento</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">domicilio</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">telefono</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">nacimiento</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span>
+    <span class="n">mail</span> <span class="o">=</span> <span class="n">CharField</span><span class="p">()</span></div>
+
+
+<span class="n">db</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Conecta con la Base de datos</span>
+
+<span class="sd">Esta funcion establece una conexion con la base de datos especificada.</span>
+
+<span class="sd">Args:</span>
+<span class="sd">    None</span>
+
+<span class="sd">Returns:</span>
+<span class="sd">    None: No retorna nada.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">db</span><span class="o">.</span><span class="n">create_tables</span><span class="p">([</span><span class="n">Alumno2</span><span class="p">])</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Crea una tabla en la base de datos.</span>
+
+<span class="sd">Esta funcion crea la tabla correspondiente al modelo Alumno2 en la base de datos.</span>
+
+<span class="sd">Args:</span>
+<span class="sd">    Alumno2 (BaseModel): La clase del modelo que se utilizara para crear la tabla</span>
+<span class="sd">        </span>
+<span class="sd">Returns:</span>
+<span class="sd">    None: No retorna nada.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="Abmc">
+<a class="viewcode-back" href="../modelo.html#modelo.Abmc">[docs]</a>
+<span class="k">class</span> <span class="nc">Abmc</span><span class="p">(</span><span class="n">Subject</span><span class="p">):</span>
+<span class="w">                  </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class para la gestion de alumnos en la base de datos</span>
+
+<span class="sd">        Methods:</span>
+
+<span class="sd">            alta(nombre, apellido, curso, documento, domicilio, telefono, nacimiento, mail, app): </span>
+<span class="sd">                Añade un nuevo alumno a la base de datos. </span>
+
+<span class="sd">            alumnos_cursos(app): </span>
+<span class="sd">                Recupera la lista de alumnos y sus documentos. </span>
+
+<span class="sd">            borrar(tree, app): </span>
+<span class="sd">                Elimina un alumno de la base de datos. </span>
+
+<span class="sd">            modificar(item, nombre, apellido, curso, documento, domicilio, telefono, nacimiento, mail, app):</span>
+<span class="sd">              Modifica los datos de un alumno en la base de datos. </span>
+
+<span class="sd">            consultar(treeview, app): </span>
+<span class="sd">                Consulta los datos de un alumno específico. </span>
+
+<span class="sd">            calcular_edad(fecha): </span>
+<span class="sd">                Calcula la edad de una persona dada su fecha de nacimiento</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+       
+<div class="viewcode-block" id="Abmc.alta">
+<a class="viewcode-back" href="../modelo.html#modelo.Abmc.alta">[docs]</a>
+        <span class="nd">@ingreso</span>
+        <span class="k">def</span> <span class="nf">alta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nombre</span><span class="p">,</span> <span class="n">apellido</span><span class="p">,</span> <span class="n">curso</span><span class="p">,</span> <span class="n">documento</span><span class="p">,</span> <span class="n">domicilio</span><span class="p">,</span> <span class="n">telefono</span><span class="p">,</span> <span class="n">nacimiento</span><span class="p">,</span> <span class="n">mail</span><span class="p">,</span><span class="n">app</span><span class="p">):</span>
+<span class="w">                        </span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Da de alta un nuevo registro en la base de datos</span>
+<span class="sd">            Se llama al metodo calcular_edad, para pasar a validar_datos</span>
+<span class="sd">            Se llama al metodo validar_datos en con_regex</span>
+<span class="sd">            Se llama al metodo alumnos_cursos que busca todos los documentos en la base de datos y </span>
+<span class="sd">                genera informacion para actualizar el treeview</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                nombre (str): Nombre del alumno. </span>
+
+<span class="sd">                apellido (str): Apellido del alumno. </span>
+
+<span class="sd">                curso (str): Curso al que concurre el individuo. </span>
+
+<span class="sd">                documento (str): DNI del alumno. </span>
+
+<span class="sd">                domicilio (str): Dirección del alumno. </span>
+
+<span class="sd">                telefono (str): Teléfono del alumno. </span>
+
+<span class="sd">                nacimiento (str): Fecha de nacimiento del alumno. </span>
+
+<span class="sd">                mail (str): Email del alumno. </span>
+
+<span class="sd">                app (object): Instancia de la clase Ventanita.</span>
+<span class="sd">            </span>
+<span class="sd">            Returns:</span>
+
+<span class="sd">                tuple: Un tuple que contiene un string y una lista:</span>
+
+<span class="sd">                    - retorno (string): tiene la informacion para ser mostrada en pantalla en VISTA </span>
+
+<span class="sd">                    - resultado (list): Una lista con todos los datos en la DB para actualizar el treeview.                                             </span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">resultado</span> <span class="o">=</span><span class="p">[]</span>  
+            <span class="n">edad</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calcular_edad</span><span class="p">(</span><span class="n">nacimiento</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+            <span class="n">ic</span><span class="p">(</span><span class="n">edad</span><span class="p">)</span>
+            <span class="n">ic</span><span class="p">(</span><span class="n">edad</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot; años&quot;</span><span class="p">)</span> 
+            <span class="n">validacion</span> <span class="o">=</span> <span class="n">validar_datos</span><span class="p">(</span><span class="n">nombre</span><span class="p">,</span> <span class="n">apellido</span><span class="p">,</span> <span class="n">curso</span><span class="p">,</span> <span class="n">documento</span><span class="p">,</span> <span class="n">domicilio</span><span class="p">,</span> <span class="n">telefono</span><span class="p">,</span> <span class="n">nacimiento</span><span class="p">,</span> <span class="n">mail</span><span class="p">,</span> <span class="n">edad</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                       
+            <span class="k">if</span> <span class="n">validacion</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+                <span class="n">app</span><span class="o">.</span><span class="n">graf</span><span class="o">=</span><span class="kc">False</span>
+                <span class="n">ic</span><span class="p">(</span><span class="s2">&quot;VALIDACION&quot;</span><span class="p">,</span><span class="n">validacion</span><span class="p">)</span> 
+                <span class="k">return</span> <span class="n">validacion</span> 
+            <span class="k">else</span><span class="p">:</span>
+                            
+                <span class="c1">##################################### EXCEPTION ##############################################</span>
+                <span class="c1"># busca todos los DNI en la base de datos y se fija si el ingresado esta en la base, informando un error</span>
+                <span class="c1"># Resultado es una lista que contiene todos los datos de la base de datos, para pasar a vista</span>
+            
+                <span class="n">resultado</span><span class="p">,</span> <span class="n">documentos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alumnos_cursos</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+                <span class="c1"># La funcion ingresar_documento, en caso de que el documento ya este en la base de datos</span>
+                <span class="c1"># dentro de la lista documentos, produce un RAISE y la cadena except lo registra en log</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">ic</span><span class="p">(</span><span class="s2">&quot;Intentando ingresar un documento...&quot;</span><span class="p">)</span>
+                    <span class="n">evento</span> <span class="o">=</span><span class="n">RegistroLog</span><span class="p">(</span><span class="n">nombre</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">apellido</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">documento</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+                    <span class="n">evento</span><span class="o">.</span><span class="n">ingresar_documento</span><span class="p">(</span><span class="n">documentos</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">RegistroLog</span> <span class="k">as</span> <span class="n">log</span><span class="p">:</span>
+                    <span class="n">ic</span><span class="p">(</span><span class="s2">&quot;Se ha producido un error al ingresar el documento.&quot;</span><span class="p">)</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">registrar_error</span><span class="p">()</span>  
+                    <span class="k">return</span> <span class="s2">&quot;El DNI ya se encuentra  EN LA DB&quot;</span><span class="p">,</span> <span class="n">resultado</span>
+
+                    
+                <span class="c1"># Alta en la base de datos. Crea una instancia, alumno2 que es guardada</span>
+                
+                <span class="n">alumno</span> <span class="o">=</span> <span class="n">Alumno2</span><span class="p">()</span>
+                <span class="n">alumno</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="n">nombre</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="n">alumno</span><span class="o">.</span><span class="n">apellido</span> <span class="o">=</span> <span class="n">apellido</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="n">alumno</span><span class="o">.</span><span class="n">curso</span> <span class="o">=</span> <span class="n">curso</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="n">alumno</span><span class="o">.</span><span class="n">documento</span> <span class="o">=</span> <span class="n">documento</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="n">alumno</span><span class="o">.</span><span class="n">domicilio</span> <span class="o">=</span> <span class="n">domicilio</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="n">alumno</span><span class="o">.</span><span class="n">telefono</span> <span class="o">=</span> <span class="n">telefono</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="n">alumno</span><span class="o">.</span><span class="n">nacimiento</span> <span class="o">=</span> <span class="n">nacimiento</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="n">alumno</span><span class="o">.</span><span class="n">mail</span> <span class="o">=</span> <span class="n">mail</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="n">alumno</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">resultado</span><span class="p">,</span> <span class="n">documentos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alumnos_cursos</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">graf</span> <span class="o">=</span><span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">notificar</span><span class="p">(</span><span class="n">nombre</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">apellido</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">documento</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+                    
+                <span class="k">return</span> <span class="s2">&quot;Se ha ingresado el alumno: &quot;</span><span class="o">+</span><span class="n">nombre</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="n">apellido</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot;,DNI &quot;</span><span class="o">+</span><span class="n">documento</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">resultado</span></div>
+
+                            
+    
+                    
+<div class="viewcode-block" id="Abmc.alumnos_cursos">
+<a class="viewcode-back" href="../modelo.html#modelo.Abmc.alumnos_cursos">[docs]</a>
+        <span class="k">def</span> <span class="nf">alumnos_cursos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">app</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Crea dos listas</span>
+<span class="sd">            Una con todos los datos de los alumnos de la base de datos para actualizar el treeview</span>
+<span class="sd">            Otra lista de documentos (DNI) de los alumnos en la base de datos</span>
+<span class="sd">            Calcula la cantidad de alumnos en cada curso y actualiza la lista tamaño</span>
+
+<span class="sd">            Args:        </span>
+<span class="sd">                app (object): la instancia de la clase Ventanita</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                tuple: Un tuple que contiene un string y una lista:</span>
+
+<span class="sd">                    - resultado (list): Una lista con todos los datos en la DB para actualizar el treeview.</span>
+
+<span class="sd">                    - documentos (list): Una lista con todos los documentos (DNI) en la base de datos.                               </span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">resultado</span><span class="o">=</span><span class="p">[]</span>
+            <span class="n">documentos</span><span class="o">=</span><span class="p">[]</span>
+            
+            <span class="n">egb</span><span class="p">,</span> <span class="n">cfi</span><span class="p">,</span> <span class="n">superior</span><span class="p">,</span> <span class="n">integracion</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+
+            <span class="k">for</span> <span class="n">fila</span> <span class="ow">in</span> <span class="n">Alumno2</span><span class="o">.</span><span class="n">select</span><span class="p">():</span>
+                <span class="n">resultado</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">fila</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">fila</span><span class="o">.</span><span class="n">nombre</span><span class="p">,</span> <span class="n">fila</span><span class="o">.</span><span class="n">apellido</span><span class="p">,</span> <span class="n">fila</span><span class="o">.</span><span class="n">curso</span><span class="p">,</span> <span class="n">fila</span><span class="o">.</span><span class="n">documento</span><span class="p">,</span> <span class="n">fila</span><span class="o">.</span><span class="n">domicilio</span><span class="p">,</span> <span class="n">fila</span><span class="o">.</span><span class="n">telefono</span><span class="p">,</span> <span class="n">fila</span><span class="o">.</span><span class="n">nacimiento</span><span class="p">,</span> <span class="n">fila</span><span class="o">.</span><span class="n">mail</span><span class="p">))</span>
+                            
+                <span class="n">documentos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fila</span><span class="o">.</span><span class="n">documento</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">fila</span><span class="o">.</span><span class="n">curso</span> <span class="o">==</span><span class="s2">&quot;egb&quot;</span><span class="p">:</span>
+                    <span class="n">egb</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">fila</span><span class="o">.</span><span class="n">curso</span> <span class="o">==</span><span class="s2">&quot;cfi&quot;</span><span class="p">:</span>
+                    <span class="n">cfi</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">fila</span><span class="o">.</span><span class="n">curso</span> <span class="o">==</span><span class="s2">&quot;superior&quot;</span><span class="p">:</span>
+                    <span class="n">superior</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">fila</span><span class="o">.</span><span class="n">curso</span> <span class="o">==</span><span class="s2">&quot;integracion&quot;</span><span class="p">:</span>
+                    <span class="n">integracion</span> <span class="o">+=</span> <span class="mi">1</span>                
+            <span class="n">app</span><span class="o">.</span><span class="n">graf</span><span class="o">=</span><span class="kc">True</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">tamano</span><span class="o">=</span> <span class="p">[</span><span class="n">egb</span><span class="p">,</span> <span class="n">cfi</span><span class="p">,</span> <span class="n">superior</span><span class="p">,</span> <span class="n">integracion</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">resultado</span><span class="p">,</span> <span class="n">documentos</span></div>
+
+            
+
+<div class="viewcode-block" id="Abmc.borrar">
+<a class="viewcode-back" href="../modelo.html#modelo.Abmc.borrar">[docs]</a>
+        <span class="nd">@eliminacion</span>
+        <span class="k">def</span> <span class="nf">borrar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tree</span><span class="p">,</span> <span class="n">app</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Elimina un alumno de la base de datos</span>
+
+<span class="sd">            Recoge el registro seleccionado en el treeview y elimina la instancia </span>
+<span class="sd">            correspondiente en la base de datos. </span>
+<span class="sd">            Luego actualiza la lista de alumnos y los datos gráficos en la interfaz.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                tree (object): El treeview de tkinter de los alumnos</span>
+
+<span class="sd">                app (object): Instancia de la clase Ventanita</span>
+
+<span class="sd">            Returns: </span>
+
+<span class="sd">                tuple: Un tuple que contiene un strings y una lista:</span>
+
+<span class="sd">                    - retorno (string): tiene la informacion para ser mostrada en pantalla en VISTA </span>
+
+<span class="sd">                    - resultado (list): Una lista con todos los datos en la DB para actualizar el treeview.   </span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">resultado</span> <span class="o">=</span><span class="p">[]</span>
+            <span class="n">valor</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">selection</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">valor</span><span class="p">:</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">graf</span> <span class="o">=</span><span class="kc">False</span>
+                <span class="k">return</span> <span class="s2">&quot;Por favor seleccione una fila para eliminar.&quot;</span><span class="p">,</span><span class="n">resultado</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">valor</span><span class="p">)</span>
+            <span class="n">mi_id</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
+            <span class="n">borrar</span> <span class="o">=</span> <span class="n">Alumno2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Alumno2</span><span class="o">.</span><span class="n">id</span><span class="o">==</span><span class="n">mi_id</span><span class="p">)</span>
+            <span class="n">borrar</span><span class="o">.</span><span class="n">delete_instance</span><span class="p">()</span>
+
+            <span class="n">app</span><span class="o">.</span><span class="n">graf</span> <span class="o">=</span> <span class="kc">True</span>
+            
+            <span class="n">resultado</span><span class="p">,</span> <span class="n">documentos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alumnos_cursos</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+            <span class="n">alumno</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot; con DNI: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span>
+                    
+            <span class="k">return</span> <span class="s2">&quot;SE DIO DE BAJA AL ALUMNO &quot;</span><span class="o">+</span><span class="n">alumno</span><span class="p">,</span> <span class="n">resultado</span></div>
+
+    
+        
+<div class="viewcode-block" id="Abmc.modificar">
+<a class="viewcode-back" href="../modelo.html#modelo.Abmc.modificar">[docs]</a>
+        <span class="nd">@actualizacion</span>
+        <span class="k">def</span> <span class="nf">modificar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">nombre</span><span class="p">,</span> <span class="n">apellido</span><span class="p">,</span> <span class="n">curso</span><span class="p">,</span> <span class="n">documento</span><span class="p">,</span> <span class="n">domicilio</span><span class="p">,</span> <span class="n">telefono</span><span class="p">,</span> <span class="n">nacimiento</span><span class="p">,</span> <span class="n">mail</span><span class="p">,</span> <span class="n">app</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Modifica un registro en la base de datos</span>
+
+<span class="sd">            Recoge los datos del registro seleccionado en el treeview y actualiza los campos correspondientes </span>
+<span class="sd">            en la base de datos. Luego actualiza la lista de alumnos y los datos de la interfaz</span>
+
+<span class="sd">            Args:</span>
+
+<span class="sd">                item (dict): Lista con los valores de una fila de un registro del treeview. </span>
+
+<span class="sd">                nombre (str): Entry widget para el nombre del alumno. </span>
+
+<span class="sd">                apellido (str): Entry widget para el apellido del alumno. </span>
+
+<span class="sd">                curso (str): Entry widget para el curso del alumno. </span>
+
+<span class="sd">                documento (str): Entry widget para el documento del alumno. </span>
+
+<span class="sd">                domicilio (str): Entry widget para el domicilio del alumno. </span>
+
+<span class="sd">                telefono (str): Entry widget para el teléfono del alumno. </span>
+
+<span class="sd">                nacimiento (str): Entry widget para la fecha de nacimiento del alumno. </span>
+
+<span class="sd">                mail (str): Entry widget para el email del alumno. </span>
+
+<span class="sd">                app (object): Instancia de la clase Ventanita.</span>
+
+<span class="sd">            Returns: </span>
+<span class="sd">            </span>
+<span class="sd">                tuple: Un tuple que contiene un string y una lista:</span>
+
+<span class="sd">                    - retorno (string): tiene la informacion para ser mostrada en pantalla en VISTA </span>
+
+<span class="sd">                    - resultado (list): Una lista con todos los datos en la DB para actualizar el treeview.                </span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">resultado</span> <span class="o">=</span><span class="p">[]</span>   
+            <span class="n">edad</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calcular_edad</span><span class="p">(</span><span class="n">nacimiento</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+            <span class="n">ic</span><span class="p">(</span><span class="n">edad</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">edad</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot; años&quot;</span><span class="p">)</span>
+            <span class="n">validacion</span> <span class="o">=</span> <span class="n">validar_datos</span><span class="p">(</span><span class="n">nombre</span><span class="p">,</span> <span class="n">apellido</span><span class="p">,</span> <span class="n">curso</span><span class="p">,</span> <span class="n">documento</span><span class="p">,</span> <span class="n">domicilio</span><span class="p">,</span> <span class="n">telefono</span><span class="p">,</span> <span class="n">nacimiento</span><span class="p">,</span> <span class="n">mail</span><span class="p">,</span> <span class="n">edad</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        
+            
+            <span class="k">if</span> <span class="n">validacion</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+                <span class="n">app</span><span class="o">.</span><span class="n">graf</span><span class="o">=</span><span class="kc">False</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;VALIDACION&quot;</span><span class="p">,</span><span class="n">validacion</span><span class="p">)</span> 
+                <span class="k">return</span> <span class="n">validacion</span> 
+            
+
+            <span class="c1"># Modifica la base de datos</span>
+            <span class="n">mi_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">])</span>
+            <span class="n">actualizar</span> <span class="o">=</span> <span class="n">Alumno2</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="n">nombre</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">apellido</span><span class="o">=</span><span class="n">apellido</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">curso</span><span class="o">=</span><span class="n">curso</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">documento</span><span class="o">=</span><span class="n">documento</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">domicilio</span><span class="o">=</span><span class="n">domicilio</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">telefono</span><span class="o">=</span><span class="n">telefono</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">nacimiento</span><span class="o">=</span><span class="n">nacimiento</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">mail</span><span class="o">=</span><span class="n">mail</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Alumno2</span><span class="o">.</span><span class="n">id</span><span class="o">==</span> <span class="n">mi_id</span><span class="p">)</span>
+            <span class="n">actualizar</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+            <span class="n">resultado</span><span class="p">,</span> <span class="n">documentos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alumnos_cursos</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">graf</span> <span class="o">=</span> <span class="kc">True</span>
+                        
+            <span class="k">return</span> <span class="s2">&quot;Se han modificado los datos de: &quot;</span><span class="o">+</span><span class="n">nombre</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="n">apellido</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot;,DNI &quot;</span><span class="o">+</span><span class="n">documento</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">resultado</span></div>
+
+
+               
+<div class="viewcode-block" id="Abmc.consultar">
+<a class="viewcode-back" href="../modelo.html#modelo.Abmc.consultar">[docs]</a>
+        <span class="k">def</span> <span class="nf">consultar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">treeview</span><span class="p">,</span> <span class="n">app</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Consulta un registro en la base de datos y despliega los datos en los Entries</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                treeview (object): El treeview de tkinter de los alumnos</span>
+
+<span class="sd">                app (object): Instancia de la clase Ventanita</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                tuple: Un tuple que contiene dos strings:</span>
+
+<span class="sd">                    - retorno (string): tiene la informacion para ser mostrada en pantalla en VISTA </span>
+
+<span class="sd">                    - edad (string): la edad del alumno en dias, meses y años                  </span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">valor</span> <span class="o">=</span> <span class="n">treeview</span><span class="o">.</span><span class="n">selection</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">valor</span><span class="p">:</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">graf</span><span class="o">=</span><span class="kc">False</span>
+                <span class="k">return</span> <span class="s2">&quot;Por favor selecciones una fila para consultar.&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+             
+            <span class="n">item</span><span class="o">=</span> <span class="n">treeview</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">valor</span><span class="p">)</span> 
+             
+            <span class="n">app</span><span class="o">.</span><span class="n">nombre_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">apellido_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">curso_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">documento_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">domicilio_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">][</span><span class="mi">4</span><span class="p">])</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">tel_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">][</span><span class="mi">5</span><span class="p">])</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">nac_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">][</span><span class="mi">6</span><span class="p">])</span>  
+            <span class="n">app</span><span class="o">.</span><span class="n">mail_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">][</span><span class="mi">7</span><span class="p">])</span> 
+            <span class="n">app</span><span class="o">.</span><span class="n">graf</span><span class="o">=</span><span class="kc">False</span>   
+            <span class="n">edad</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calcular_edad</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">][</span><span class="mi">6</span><span class="p">])</span>
+            <span class="n">ic</span><span class="p">(</span><span class="n">edad</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;SE CONSULTO&quot;</span><span class="p">,</span> <span class="n">edad</span></div>
+
+        
+
+<div class="viewcode-block" id="Abmc.calcular_edad">
+<a class="viewcode-back" href="../modelo.html#modelo.Abmc.calcular_edad">[docs]</a>
+        <span class="k">def</span> <span class="nf">calcular_edad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fecha</span><span class="p">):</span>
+<span class="w">            </span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Calcula la edad del alumno</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                fecha (str): fecha de nacimiento del alumno en formato &#39;dd/mm/yy&#39;</span>
+<span class="sd">                </span>
+<span class="sd">            Returns: </span>
+<span class="sd">                - edad (str): la edad del alumno en dias, meses y años                             </span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">today</span><span class="p">,</span> <span class="s2">&quot;   &quot;</span><span class="p">,</span> <span class="n">fecha</span><span class="p">)</span>
+            <span class="n">nac</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">fecha</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%y&quot;</span><span class="p">)</span>
+            <span class="n">edad_y</span><span class="o">=</span> <span class="n">today</span><span class="o">.</span><span class="n">year</span><span class="o">-</span><span class="n">nac</span><span class="o">.</span><span class="n">year</span>
+            <span class="n">edad_m</span><span class="o">=</span><span class="n">today</span><span class="o">.</span><span class="n">month</span><span class="o">-</span><span class="n">nac</span><span class="o">.</span><span class="n">month</span>
+            <span class="n">edad_d</span><span class="o">=</span><span class="n">today</span><span class="o">.</span><span class="n">day</span><span class="o">-</span><span class="n">nac</span><span class="o">.</span><span class="n">day</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">edad_d</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">):</span>
+                <span class="n">edad_d</span><span class="o">+=</span><span class="mi">30</span>
+                <span class="n">edad_m</span><span class="o">-=</span><span class="mi">1</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">edad_m</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">):</span>
+                <span class="n">edad_m</span><span class="o">+=</span><span class="mi">12</span>
+                <span class="n">edad_y</span><span class="o">-=</span><span class="mi">1</span>
+            <span class="c1">#edad= f&quot;{edad_y} años, {edad_m} meses, {edad_d} días&quot;</span>
+            <span class="n">edad</span><span class="o">=</span> <span class="p">(</span><span class="n">edad_y</span><span class="p">,</span> <span class="n">edad_m</span><span class="p">,</span> <span class="n">edad_d</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;EDAD&quot;</span><span class="p">,</span> <span class="n">fecha</span><span class="p">,</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">edad</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">edad</span></div>
+</div>
+
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">MiProyecto</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cliente1.html">cliente1 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../con_regex.html">con_regex module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../controlador.html">controlador module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modelo.html">modelo module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../observador.html">observador module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../servidor1.html">servidor1 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vista.html">vista module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Claudio.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

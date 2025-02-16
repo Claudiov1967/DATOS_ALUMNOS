@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vista &#8212; MiProyecto 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for vista</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Vista de la aplicacion</span>
+<span class="sd">Muestra la información a los usuarios y maneja la interacción con ellos</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">Label</span><span class="p">,</span> <span class="n">Entry</span><span class="p">,</span> <span class="n">Button</span><span class="p">,</span> <span class="n">ttk</span><span class="p">,</span> <span class="n">Frame</span><span class="p">,</span> <span class="n">Tk</span><span class="p">,</span> <span class="n">StringVar</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">ImageTk</span><span class="p">,</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib.backends.backend_tkagg</span> <span class="kn">import</span> <span class="n">FigureCanvasTkAgg</span>
+<span class="kn">from</span> <span class="nn">tkcalendar</span> <span class="kn">import</span> <span class="n">Calendar</span>
+<span class="kn">import</span> <span class="nn">tkinter</span> <span class="k">as</span> <span class="nn">tk</span>
+<span class="kn">from</span> <span class="nn">tkinter.messagebox</span> <span class="kn">import</span> <span class="n">showinfo</span><span class="p">,</span> <span class="n">showwarning</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">modelo</span> <span class="kn">import</span> <span class="n">Abmc</span> 
+<span class="kn">from</span> <span class="nn">modelo</span> <span class="kn">import</span> <span class="n">egb</span><span class="p">,</span> <span class="n">cfi</span><span class="p">,</span> <span class="n">superior</span><span class="p">,</span> <span class="n">integracion</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">icecream</span> <span class="kn">import</span> <span class="n">ic</span>
+
+
+
+<div class="viewcode-block" id="Ventanita">
+<a class="viewcode-back" href="../vista.html#vista.Ventanita">[docs]</a>
+<span class="k">class</span> <span class="nc">Ventanita</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Clase que crea una ventana de gestión de datos e ingresos de alumnos.</span>
+<span class="sd">     </span>
+<span class="sd">    Args:      </span>
+<span class="sd">        window (tkinter.Tk): Ventana principal de Tkinter. </span>
+
+<span class="sd">        nombres (list): Lista de nombres de alumnos. </span>
+
+<span class="sd">        colores (list): Lista de colores para cada barra en el gráfico. </span>
+
+<span class="sd">        tamano (list): Lista de tamaños para cada barra en el gráfico. </span>
+
+<span class="sd">        graf (bool): Determina si se actualizará el gráfico (default es True). </span>
+<span class="sd">        </span>
+<span class="sd">    Attributes:</span>
+
+<span class="sd">        root (tkinter.Tk): Ventana principal de Tkinter. </span>
+
+<span class="sd">        nombres (list): Lista de nombres de alumnos. </span>
+
+<span class="sd">        colores (list): Lista de colores para cada barra en el gráfico. </span>
+
+<span class="sd">        tamano (list): Lista de tamaños para cada barra en el gráfico. </span>
+
+<span class="sd">        graf (bool): Determina si se mostrará el gráfico. </span>
+
+<span class="sd">        nombre_val (tkinter.StringVar): Variable String para el nombre. </span>
+
+<span class="sd">        apellido_val (tkinter.StringVar): Variable String para el apellido. </span>
+
+<span class="sd">        curso_val (tkinter.StringVar): Variable String para el curso. </span>
+
+<span class="sd">        documento_val (tkinter.StringVar): Variable String para el documento. </span>
+
+<span class="sd">        domicilio_val (tkinter.StringVar): Variable String para el domicilio. </span>
+
+<span class="sd">        tel_val (tkinter.StringVar): Variable String para el teléfono. </span>
+
+<span class="sd">        nac_val (tkinter.StringVar): Variable String para la fecha de nacimiento. </span>
+
+<span class="sd">        mail_val (tkinter.StringVar): Variable String para el email. </span>
+
+<span class="sd">        edad_val (tkinter.StringVar): Variable String para la edad. </span>
+
+<span class="sd">        objeto_base (Abmc): Objeto base para la gestión de alumnos. </span>
+<span class="sd">        </span>
+<span class="sd">    Méthods: </span>
+
+<span class="sd">        cambiar_colores(): </span>
+<span class="sd">            Cambia el color de fondo de la ventana a un color aleatorio. </span>
+
+<span class="sd">        elegir_fecha(): </span>
+<span class="sd">            Formatea y establece la fecha seleccionada en el calendario. </span>
+
+<span class="sd">        show_alta():</span>
+<span class="sd">            Muestra el proceso de alta de un alumno. </span>
+
+<span class="sd">        actualizar_treeview(resultado): </span>
+<span class="sd">            Actualiza el treeview con los resultados proporcionados. </span>
+
+<span class="sd">        actualizar_grafico(tamano): </span>
+<span class="sd">            Actualiza el gráfico con los tamaños proporcionados. </span>
+
+<span class="sd">        actualizar(): </span>
+<span class="sd">            Actualiza el treeview y el gráfico con datos actuales. </span>
+
+<span class="sd">        show_borrar(): </span>
+<span class="sd">            Muestra el proceso de borrado de un alumno. </span>
+
+<span class="sd">        show_modificar(): </span>
+<span class="sd">            Muestra el proceso de modificación de datos de un alumno. </span>
+
+<span class="sd">        show_consultar(): </span>
+<span class="sd">            Muestra el proceso de consulta de datos de un alumno. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">,</span> <span class="n">nombres</span><span class="p">,</span> <span class="n">colores</span><span class="p">,</span> <span class="n">tamano</span><span class="p">,</span> <span class="n">graf</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>       
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor de la clase Ventanita.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">        window (Tk): La ventana gráfica.</span>
+
+<span class="sd">        nombres (list): Lista con nombres de las barras del gráfico.</span>
+
+<span class="sd">        colores (list): Lista con los colores de las barras del gráfico.</span>
+
+<span class="sd">        tamano (list): Lista con la cantidad de alumnos en cada curso.</span>
+
+<span class="sd">        graf (bool): Si es True se actualiza el gráfico. Por defecto es True.</span>
+
+<span class="sd">    Attributes:</span>
+
+<span class="sd">        root (Tk): La ventana principal de la aplicación.</span>
+
+<span class="sd">        nombres (list): Lista con nombres de las barras del gráfico.</span>
+
+<span class="sd">        colores (list): Lista con los colores de las barras del gráfico.</span>
+
+<span class="sd">        tamano (list): Lista con la cantidad de alumnos en cada curso.</span>
+
+<span class="sd">        graf (bool): Indica si se debe actualizar el gráfico.</span>
+
+<span class="sd">        nombre_val (StringVar): Variable para el nombre del alumno.</span>
+
+<span class="sd">        apellido_val (StringVar): Variable para el apellido del alumno.</span>
+
+<span class="sd">        curso_val (StringVar): Variable para el curso del alumno.</span>
+
+<span class="sd">        documento_val (StringVar): Variable para el documento del alumno.</span>
+
+<span class="sd">        domicilio_val (StringVar): Variable para el domicilio del alumno.</span>
+
+<span class="sd">        tel_val (StringVar): Variable para el teléfono del alumno.</span>
+
+<span class="sd">        nac_val (StringVar): Variable para la fecha de nacimiento del alumno.</span>
+
+<span class="sd">        mail_val (StringVar): Variable para el email del alumno.</span>
+
+<span class="sd">        edad_val (StringVar): Variable para la edad del alumno.</span>
+
+<span class="sd">        objeto_base (Abmc): Instancia de la clase Abmc.</span>
+
+<span class="sd">        raiz (Path): Directorio base del archivo.</span>
+
+<span class="sd">        ruta_server (str): Ruta completa del archivo del servidor.</span>
+
+<span class="sd">        theproc (subprocess.Popen): Proceso del servidor</span>
+
+<span class="sd">        titulo (Label): Instancia de la clase Label que muestra el título de la aplicación.</span>
+
+<span class="sd">        frame (Frame): Instancia de la clase Frame que actúa como contenedor para otros widgets.</span>
+
+<span class="sd">        canvas (FigureCanvasTkAgg): Instancia de la clase FigureCanvasTkAgg para mostrar gráficos.</span>
+
+<span class="sd">        tree (ttk.Treeview): Instancia de la clase Treeview para mostrar datos en forma de tabla.</span>
+
+<span class="sd">        style (ttk.Style): Instancia de la clase Style para personalizar la apariencia de los widgets.</span>
+
+<span class="sd">        calendario (Calendar): Instancia de la clase Calendar para seleccionar fechas.</span>
+
+<span class="sd">        boton_alta (Button): Botón para dar de alta un nuevo registro.</span>
+
+<span class="sd">        boton_borrar (Button): Botón para borrar un registro existente.</span>
+
+<span class="sd">        boton_modificar (Button): Botón para modificar un registro existente.</span>
+
+<span class="sd">        boton_consultar (Button): Botón para consultar registros.</span>
+
+<span class="sd">        boton_fecha (Button): Botón para aceptar la fecha seleccionada.</span>
+
+<span class="sd">        boton_sorpresa (Button): Botón para cambiar colores de la interfaz.</span>
+
+<span class="sd">        boton_lanzar (Button): Botón para lanzar el servidor.</span>
+
+<span class="sd">        boton_apagar (Button): Botón para apagar el servidor.</span>
+
+<span class="sd">        image1 (ImageTk.PhotoImage): Instancia de la clase PhotoImage para mostrar una imagen.</span>
+
+<span class="sd">        label1 (Label): Instancia de la clase Label que muestra la imagen</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nombres</span> <span class="o">=</span> <span class="n">nombres</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">colores</span> <span class="o">=</span> <span class="n">colores</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tamano</span> <span class="o">=</span> <span class="n">tamano</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graf</span> <span class="o">=</span> <span class="n">graf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nombre_val</span><span class="o">=</span> <span class="n">StringVar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apellido_val</span><span class="o">=</span> <span class="n">StringVar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">curso_val</span><span class="o">=</span> <span class="n">StringVar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">documento_val</span><span class="o">=</span> <span class="n">StringVar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">domicilio_val</span><span class="o">=</span> <span class="n">StringVar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tel_val</span><span class="o">=</span> <span class="n">StringVar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nac_val</span><span class="o">=</span> <span class="n">StringVar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mail_val</span><span class="o">=</span> <span class="n">StringVar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edad_val</span><span class="o">=</span><span class="n">StringVar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objeto_base</span> <span class="o">=</span> <span class="n">Abmc</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">raiz</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ruta_server</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raiz</span><span class="p">,</span> <span class="s1">&#39;servidor1.py&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theproc</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Configuracion de la ventana principal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">pad_x</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="n">pad_y</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;SISTEMA DE GESTION DE DATOS&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">bg</span><span class="o">=</span><span class="s2">&quot;#2F4F4F&quot;</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+
+        <span class="c1"># Titulo principal de la ventana         </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">titulo</span> <span class="o">=</span> <span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;SISTEMA DE GESTION DE DATOS E INGRESOS DE ALUMNOS&quot;</span><span class="p">,</span>
+                        <span class="n">bg</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;thistle1&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span> <span class="mi">60</span><span class="p">,</span><span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Garamond&quot;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span><span class="s2">&quot;bold&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">titulo</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;ew&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Gráfico de alumnos por curso</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">Frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowspan</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">dpi</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nombres</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tamano</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colores</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;ALUMNOS POR CURSO&#39;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">FigureCanvasTkAgg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="p">,</span> <span class="n">master</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">get_tk_widget</span><span class="p">()</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowspan</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># widgets con los nombres de los campos a conpletar por cada registro</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Nombre/s&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apellido</span> <span class="o">=</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Apellido/s&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span><span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apellido</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">,</span>  <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">curso</span> <span class="o">=</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Curso      &quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span><span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">curso</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">,</span>  <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">documento</span> <span class="o">=</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Documento&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">documento</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">,</span>  <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">domicilio</span> <span class="o">=</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Domicilio&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">domicilio</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">,</span>  <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">telefono</span> <span class="o">=</span><span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Telefono&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">telefono</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nacimiento</span> <span class="o">=</span> <span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;F. Nac.&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nacimiento</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mail</span> <span class="o">=</span> <span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Email&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mail</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edad</span> <span class="o">=</span> <span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Edad&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edad</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edad2</span> <span class="o">=</span> <span class="n">Label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Desarrollado por Claudio Valko&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span><span class="n">bg</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edad2</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span> 
+
+        <span class="c1"># Entradas de datos</span>
+        <span class="n">w_ancho</span> <span class="o">=</span> <span class="mi">25</span>
+        <span class="n">entrada1</span> <span class="o">=</span> <span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">textvariable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nombre_val</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">w_ancho</span><span class="p">,</span><span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">))</span> 
+        <span class="n">entrada1</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span><span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+        <span class="n">entrada2</span> <span class="o">=</span> <span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">textvariable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apellido_val</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">w_ancho</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">))</span> 
+        <span class="n">entrada2</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+        <span class="n">entrada3</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Combobox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">textvariable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">curso_val</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">w_ancho</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">))</span> 
+        <span class="n">entrada3</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+        <span class="n">entrada3</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;egb&#39;</span><span class="p">,</span>  
+                                <span class="s1">&#39;cfi&#39;</span><span class="p">,</span> 
+                                <span class="s1">&#39;superior&#39;</span><span class="p">,</span> 
+                                <span class="s1">&#39;integracion&#39;</span><span class="p">,</span> 
+                                <span class="s1">&#39;ex&#39;</span>
+                                <span class="p">)</span> 
+        <span class="n">entrada4</span> <span class="o">=</span> <span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">textvariable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">documento_val</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">w_ancho</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">))</span> 
+        <span class="n">entrada4</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+        <span class="n">entrada5</span> <span class="o">=</span> <span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">textvariable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">domicilio_val</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">w_ancho</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">))</span> 
+        <span class="n">entrada5</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+        <span class="n">entrada6</span> <span class="o">=</span> <span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">textvariable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tel_val</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">w_ancho</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">))</span> 
+        <span class="n">entrada6</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+        <span class="n">entrada7</span> <span class="o">=</span> <span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">textvariable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nac_val</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">w_ancho</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">))</span> 
+        <span class="n">entrada7</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span> <span class="o">=</span> <span class="mi">7</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+        <span class="n">entrada8</span> <span class="o">=</span> <span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">textvariable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mail_val</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">w_ancho</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">))</span> 
+        <span class="n">entrada8</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+        <span class="n">entrada9</span> <span class="o">=</span> <span class="n">Entry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">textvariable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edad_val</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">w_ancho</span><span class="p">,</span><span class="n">bg</span><span class="o">=</span><span class="s2">&quot;lightgreen&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">))</span> 
+        <span class="n">entrada9</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span> <span class="o">=</span> <span class="mi">9</span><span class="p">,</span> <span class="n">column</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+
+        <span class="c1"># Calendario</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calendario</span> <span class="o">=</span> <span class="n">Calendar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">selectmode</span><span class="o">=</span><span class="s2">&quot;day&quot;</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span><span class="n">selectbackground</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">normalbackground</span><span class="o">=</span><span class="s2">&quot;#00ff40&quot;</span><span class="p">,</span>
+                                <span class="n">weekendbackground</span><span class="o">=</span><span class="s2">&quot;#00ff40&quot;</span><span class="p">,</span> <span class="n">othermonthbackground</span><span class="o">=</span><span class="s2">&quot;#008040&quot;</span><span class="p">,</span> <span class="n">othermonthwebackground</span><span class="o">=</span><span class="s2">&quot;#008040&quot;</span><span class="p">,</span><span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calendario</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">rowspan</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+        <span class="c1">################################################</span>
+        <span class="c1">###############################################</span>
+        <span class="c1"># Imagen:logo (debe estar en la misma carpeta)</span>
+        <span class="c1">##############################################</span>
+        <span class="n">image1</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;logo.png&quot;</span><span class="p">)</span>
+        <span class="n">image1</span> <span class="o">=</span> <span class="n">image1</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image1</span> <span class="o">=</span> <span class="n">ImageTk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="n">image1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label1</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label1</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">rowspan</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+
+        <span class="c1">##################################################</span>
+        <span class="c1"># Treeview</span>
+        <span class="c1">##################################################</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Treeview</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">columnconfigure</span>
+        <span class="c1"># Style treeview</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Style</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">theme_use</span><span class="p">(</span><span class="s2">&quot;alt&quot;</span><span class="p">)</span>
+        <span class="c1"># Cambiar la fuente y tamaño  Cambiar &#39;Arial&#39; y &#39;12&#39; </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;Treeview&quot;</span><span class="p">,</span><span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Candara&#39;</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">rowheight</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;Treeview.Heading&quot;</span><span class="p">,</span><span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Candara&#39;</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">&#39;bold&#39;</span><span class="p">))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="p">[</span><span class="s2">&quot;columns&quot;</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;col1&quot;</span><span class="p">,</span> <span class="s2">&quot;col2&quot;</span><span class="p">,</span> <span class="s2">&quot;col3&quot;</span><span class="p">,</span> <span class="s2">&quot;col4&quot;</span><span class="p">,</span> <span class="s2">&quot;col5&quot;</span><span class="p">,</span> <span class="s2">&quot;col6&quot;</span><span class="p">,</span> <span class="s2">&quot;col7&quot;</span><span class="p">,</span><span class="s2">&quot;col8&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;#0&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">minwidth</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;col1&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">minwidth</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;col2&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span> <span class="n">minwidth</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;col3&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">minwidth</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;col4&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">minwidth</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;col5&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">270</span><span class="p">,</span> <span class="n">minwidth</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;col6&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">115</span><span class="p">,</span> <span class="n">minwidth</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;col7&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">110</span><span class="p">,</span> <span class="n">minwidth</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;col8&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">240</span><span class="p">,</span> <span class="n">minwidth</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">&quot;#0&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;ID&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">&quot;col1&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;NOMBRE&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">&quot;col2&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;APELLIDO&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">&quot;col3&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;CURSO&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">&quot;col4&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;DOCUMENTO&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">&quot;col5&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;DOMICILIO&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">&quot;col6&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;TELEFONO&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">&quot;col7&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;F. NACIM.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">&quot;col8&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;EMAIL&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+              
+        <span class="c1">##################################</span>
+        <span class="c1"># Botones de control</span>
+        <span class="c1">##################################</span>
+       
+        
+        <span class="n">boton_alta</span> <span class="o">=</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;ALTA&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">show_alta</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">boton_alta</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+        
+        <span class="n">boton_borrar</span> <span class="o">=</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;BORRAR&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">show_borrar</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">boton_borrar</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+        
+        <span class="n">boton_modificar</span> <span class="o">=</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;MODIFICAR&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">show_modificar</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">boton_modificar</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+        
+        <span class="n">boton_consultar</span> <span class="o">=</span><span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;CONSULTAR&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">show_consultar</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">boton_consultar</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+        
+        <span class="n">boton_fecha</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;ACEPTAR&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">elegir_fecha</span><span class="p">(),</span> <span class="n">bg</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">boton_fecha</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+        
+        <span class="n">boton_sorpresa</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;SORPRESA&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">cambiar_colores</span><span class="p">(),</span> <span class="n">bg</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
+                                <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">boton_sorpresa</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+
+        <span class="n">boton_lanzar</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;LANZAR&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">try_connection</span><span class="p">(),</span> <span class="n">bg</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">boton_lanzar</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+
+        <span class="n">boton_apagar</span> <span class="o">=</span> <span class="n">Button</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;APAGAR&quot;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">apagar_servidor</span><span class="p">(),</span> <span class="n">bg</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Candara&quot;</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">boton_apagar</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">padx</span><span class="o">=</span><span class="n">pad_x</span><span class="p">,</span> <span class="n">pady</span><span class="o">=</span><span class="n">pad_y</span><span class="p">)</span>
+        
+<div class="viewcode-block" id="Ventanita.cambiar_colores">
+<a class="viewcode-back" href="../vista.html#vista.Ventanita.cambiar_colores">[docs]</a>
+    <span class="k">def</span> <span class="nf">cambiar_colores</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cambia el color de fondo de la ventana a un color aleatorio</span>
+<span class="sd">        Se selecciona un color aleatorio de una lista predefinida de colores y</span>
+<span class="sd">        se aplica como color de fondo de la ventana principal.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">colores</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;snow&#39;</span><span class="p">,</span> <span class="s1">&#39;old lace&#39;</span><span class="p">,</span> <span class="s1">&#39;linen&#39;</span><span class="p">,</span> <span class="s1">&#39;antique white&#39;</span><span class="p">,</span> <span class="s1">&#39;papaya whip&#39;</span><span class="p">,</span> <span class="s1">&#39;blanched almond&#39;</span><span class="p">,</span> <span class="s1">&#39;bisque&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;peach puff&#39;</span><span class="p">,</span> <span class="s1">&#39;alice blue&#39;</span><span class="p">,</span><span class="s1">&#39;navajo white&#39;</span><span class="p">,</span> <span class="s1">&#39;lavender&#39;</span><span class="p">,</span> <span class="s1">&#39;misty rose&#39;</span><span class="p">,</span> <span class="s1">&#39;dark slate gray&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;dim gray&#39;</span><span class="p">,</span> <span class="s1">&#39;light slate gray&#39;</span><span class="p">,</span> <span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="s1">&#39;light gray&#39;</span><span class="p">,</span> <span class="s1">&#39;midnight blue&#39;</span><span class="p">,</span> <span class="s1">&#39;navy&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;cornflower blue&#39;</span><span class="p">,</span> <span class="s1">&#39;dark slate blue&#39;</span><span class="p">,</span> <span class="s1">&#39;medium slate blue&#39;</span><span class="p">,</span> <span class="s1">&#39;light slate blue&#39;</span><span class="p">,</span> <span class="s1">&#39;medium blue&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;royal blue&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;deep sky blue&#39;</span><span class="p">,</span> <span class="s1">&#39;sky blue&#39;</span><span class="p">,</span> <span class="s1">&#39;light sky blue&#39;</span><span class="p">,</span> <span class="s1">&#39;steel blue&#39;</span><span class="p">,</span> <span class="s1">&#39;light steel blue&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;powder blue&#39;</span><span class="p">,</span> <span class="s1">&#39;pale turquoise&#39;</span><span class="p">,</span> <span class="s1">&#39;dark turquoise&#39;</span><span class="p">,</span> <span class="s1">&#39;medium turquoise&#39;</span><span class="p">,</span> <span class="s1">&#39;turquoise&#39;</span><span class="p">,</span><span class="s1">&#39;cyan&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;light cyan&#39;</span><span class="p">,</span> <span class="s1">&#39;cadet blue&#39;</span><span class="p">,</span> <span class="s1">&#39;medium aquamarine&#39;</span><span class="p">,</span> <span class="s1">&#39;aquamarine&#39;</span><span class="p">,</span> <span class="s1">&#39;dark green&#39;</span><span class="p">,</span> <span class="s1">&#39;dark olive green&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;dark sea green&#39;</span><span class="p">,</span> <span class="s1">&#39;sea green&#39;</span><span class="p">,</span> <span class="s1">&#39;medium sea green&#39;</span><span class="p">,</span> <span class="s1">&#39;light sea green&#39;</span><span class="p">,</span> <span class="s1">&#39;pale green&#39;</span><span class="p">,</span> <span class="s1">&#39;spring green&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;lawn green&#39;</span><span class="p">,</span> <span class="s1">&#39;RosyBrown1&#39;</span><span class="p">,</span><span class="s1">&#39;IndianRed3&#39;</span><span class="p">,</span> <span class="s1">&#39;burlywood2&#39;</span><span class="p">,</span> <span class="s1">&#39;tan2&#39;</span><span class="p">,</span> <span class="s1">&#39;tan4&#39;</span><span class="p">,</span> <span class="s1">&#39;firebrick3&#39;</span><span class="p">,</span> <span class="s1">&#39;medium spring green&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;green yellow&#39;</span><span class="p">,</span> <span class="s1">&#39;lime green&#39;</span><span class="p">,</span> <span class="s1">&#39;yellow green&#39;</span><span class="p">,</span> <span class="s1">&#39;RosyBrown2&#39;</span><span class="p">,</span> <span class="s1">&#39;indianRed4&#39;</span><span class="p">,</span> <span class="s1">&#39;burlywood3&#39;</span><span class="p">,</span> <span class="s1">&#39;chocolate1&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;firebrick4&#39;</span><span class="p">,</span> <span class="s1">&#39;RosyBrown3&#39;</span><span class="p">,</span> <span class="s1">&#39;siennal&#39;</span><span class="p">,</span> <span class="s1">&#39;burlywood4&#39;</span><span class="p">,</span> <span class="s1">&#39;chocolate2&#39;</span><span class="p">,</span> <span class="s1">&#39;RosyBrown4&#39;</span><span class="p">,</span> <span class="s1">&#39;IndianRed1&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;IndianRed2&#39;</span><span class="p">,</span> <span class="s1">&#39;sienna2&#39;</span><span class="p">,</span> <span class="s1">&#39;sienna3&#39;</span><span class="p">,</span> <span class="s1">&#39;sienna4&#39;</span><span class="p">,</span> <span class="s1">&#39;burlywood1&#39;</span><span class="p">,</span> <span class="s1">&#39;wheat1&#39;</span><span class="p">,</span> <span class="s1">&#39;wheat2&#39;</span><span class="p">,</span> <span class="s1">&#39;wheat3&#39;</span><span class="p">,</span> <span class="s1">&#39;wheat4&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;tan1&#39;</span><span class="p">,</span> <span class="s1">&#39;chocolate3&#39;</span><span class="p">,</span> <span class="s1">&#39;firebrick1&#39;</span><span class="p">,</span> <span class="s1">&#39;firebrick2&#39;</span><span class="p">,</span> <span class="s1">&#39;brown1&#39;</span><span class="p">,</span> <span class="s1">&#39;brown2&#39;</span><span class="p">,</span> <span class="s1">&#39;brown3&#39;</span><span class="p">,</span> <span class="s1">&#39;brown4&#39;</span><span class="p">,</span> <span class="s1">&#39;salmon1&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;salmon2&#39;</span><span class="p">,</span> <span class="s1">&#39;salmon3&#39;</span><span class="p">,</span> <span class="s1">&#39;salmon4&#39;</span><span class="p">,</span> <span class="s1">&#39;LightSalmon2&#39;</span><span class="p">,</span> <span class="s1">&#39;LightSalmon3&#39;</span><span class="p">,</span> <span class="s1">&#39;LightSalmon4&#39;</span><span class="p">,</span> <span class="s1">&#39;orange2&#39;</span><span class="p">,</span> <span class="s1">&#39;DarkOrange1&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;DarkOrange2&#39;</span><span class="p">,</span><span class="s1">&#39;coral1&#39;</span><span class="p">,</span> <span class="s1">&#39;tomato2&#39;</span><span class="p">,</span> <span class="s1">&#39;OrangeRed2&#39;</span><span class="p">]</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">colores</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">background</span><span class="o">=</span><span class="n">color</span><span class="p">)</span></div>
+
+
+    
+<div class="viewcode-block" id="Ventanita.elegir_fecha">
+<a class="viewcode-back" href="../vista.html#vista.Ventanita.elegir_fecha">[docs]</a>
+    <span class="k">def</span> <span class="nf">elegir_fecha</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Llena el widget nac_val con la fecha seleccionada en el calendario</span>
+<span class="sd">        La fecha esta en el formato dd/mm/yy</span>
+<span class="sd">        Se establece en la variable `nac_val`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None: No retorna nada.        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nac_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">ic</span><span class="p">(</span><span class="s2">&quot;El dia elegido es: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">calendario</span><span class="o">.</span><span class="n">get_date</span><span class="p">())</span>
+        <span class="n">fecha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calendario</span><span class="o">.</span><span class="n">get_date</span><span class="p">()</span>
+        <span class="n">fecha_obj</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">fecha</span><span class="p">,</span> <span class="s2">&quot;%m/</span><span class="si">%d</span><span class="s2">/%y&quot;</span><span class="p">)</span>  
+        <span class="n">fecha_formateada</span> <span class="o">=</span> <span class="n">fecha_obj</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%y&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nac_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">fecha_formateada</span><span class="p">)</span></div>
+
+
+    
+<div class="viewcode-block" id="Ventanita.show_alta">
+<a class="viewcode-back" href="../vista.html#vista.Ventanita.show_alta">[docs]</a>
+    <span class="k">def</span> <span class="nf">show_alta</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span> 
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Llama al metodo alta para hacer el alta de un alumno. </span>
+<span class="sd">        Este método recoge los datos de los campos de entrada y llama al método `alta` de `objeto_base`.</span>
+<span class="sd">        Si hubo algun cambio (alta, baja o modificacion) graf es True,</span>
+<span class="sd">        se actualiza el treeview y el gráfico con los datos resultantes,</span>
+<span class="sd">        y restablece los campos de entrada. </span>
+<span class="sd">        Muestra un mensaje informativo si se procedio con el alta</span>
+<span class="sd">        o de advertencia si hubo algun error de carga de datos</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
+         
+        <span class="n">retorno</span><span class="p">,</span> <span class="n">resultado</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objeto_base</span><span class="o">.</span><span class="n">alta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nombre_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">apellido_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">curso_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">documento_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">domicilio_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tel_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nac_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mail_val</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+                           
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">graf</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">actualizar_treeview</span><span class="p">(</span><span class="n">resultado</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">actualizar_grafico</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tamano</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nombre_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">apellido_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">curso_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">documento_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">domicilio_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tel_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nac_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edad_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">mail_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">showinfo</span><span class="p">(</span><span class="s2">&quot;INFORMACION&quot;</span><span class="p">,</span> <span class="n">retorno</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">showwarning</span><span class="p">(</span><span class="s2">&quot;ADVERTENCIA&quot;</span><span class="p">,</span><span class="n">retorno</span> <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Ventanita.actualizar_treeview">
+<a class="viewcode-back" href="../vista.html#vista.Ventanita.actualizar_treeview">[docs]</a>
+    <span class="k">def</span> <span class="nf">actualizar_treeview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">resultado</span><span class="p">):</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Actualiza el treeview con los resultados proporcionados. </span>
+<span class="sd">        Elimina todos los registros actuales en el treeview y luego inserta</span>
+<span class="sd">        los nuevos registros desde los resultados.</span>
+<span class="sd">         </span>
+<span class="sd">        Args: </span>
+<span class="sd">        </span>
+<span class="sd">            resultado (list): Lista de tuplas con los datos de los registros </span>
+<span class="sd">            a insertar en el treeview. </span>
+<span class="sd">            </span>
+<span class="sd">        Returns: </span>
+<span class="sd">            None </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    
+        <span class="n">records</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">get_children</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">fila</span> <span class="ow">in</span> <span class="n">resultado</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">fila</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">values</span><span class="o">=</span><span class="p">(</span><span class="n">fila</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">fila</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">fila</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">fila</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">fila</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">fila</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">fila</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="p">,</span><span class="n">fila</span><span class="p">[</span><span class="mi">8</span><span class="p">]))</span></div>
+
+
+<div class="viewcode-block" id="Ventanita.actualizar_grafico">
+<a class="viewcode-back" href="../vista.html#vista.Ventanita.actualizar_grafico">[docs]</a>
+    <span class="k">def</span> <span class="nf">actualizar_grafico</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tamano</span><span class="p">):</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Actualiza el gráfico con los tamaños proporcionados. </span>
+<span class="sd">        Limpia el gráfico actual y dibuja un nuevo gráfico de barras </span>
+<span class="sd">        con los nombres y tamaños proporcionados. </span>
+<span class="sd">        Luego, redibuja el gráfico en el canvas. </span>
+<span class="sd">        </span>
+<span class="sd">        Args: </span>
+<span class="sd">            tamano (list): Lista de tamaños para cada barra en el gráfico. </span>
+<span class="sd">            </span>
+<span class="sd">        Returns: </span>
+<span class="sd">            None </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Limpiar el gráfico actual</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nombres</span><span class="p">,</span> <span class="n">tamano</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">colores</span><span class="p">)</span>
+        <span class="c1"># Redibujar el gráfico</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div>
+
+    
+<div class="viewcode-block" id="Ventanita.actualizar">
+<a class="viewcode-back" href="../vista.html#vista.Ventanita.actualizar">[docs]</a>
+    <span class="k">def</span> <span class="nf">actualizar</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<span class="w">         </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Actualiza el treeview y el gráfico con datos actuales. </span>
+<span class="sd">        Llama al método `alumnos_cursos` de `objeto_base` para obtener </span>
+<span class="sd">        los datos actuales de los alumnos y cursos. </span>
+<span class="sd">        Luego, actualiza el treeview y el gráfico con los resultados obtenidos. </span>
+<span class="sd">        </span>
+<span class="sd">        Args: </span>
+<span class="sd">            None </span>
+
+<span class="sd">        Returns: </span>
+<span class="sd">            None </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">resultado</span><span class="p">,</span> <span class="n">documentos</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objeto_base</span><span class="o">.</span><span class="n">alumnos_cursos</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actualizar_treeview</span><span class="p">(</span><span class="n">resultado</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actualizar_grafico</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tamano</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graf</span><span class="p">)</span></div>
+
+        
+<div class="viewcode-block" id="Ventanita.show_borrar">
+<a class="viewcode-back" href="../vista.html#vista.Ventanita.show_borrar">[docs]</a>
+    <span class="k">def</span> <span class="nf">show_borrar</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Elimina un alumno de la base de datos. </span>
+<span class="sd">        Este método llama al método `borrar` de `objeto_base` para eliminar </span>
+<span class="sd">        un registro seleccionado en el treeview. Si el gráfico está habilitado,</span>
+<span class="sd">        actualiza el treeview y el gráfico con los datos resultantes. </span>
+<span class="sd">        Muestra un mensaje de informacion. </span>
+<span class="sd">        </span>
+<span class="sd">        Args: </span>
+<span class="sd">            None </span>
+
+<span class="sd">        Returns: </span>
+<span class="sd">            None </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">retorno</span><span class="p">,</span> <span class="n">resultado</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objeto_base</span><span class="o">.</span><span class="n">borrar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tamano</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">graf</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">actualizar_grafico</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tamano</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">actualizar_treeview</span><span class="p">(</span><span class="n">resultado</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nombre_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">apellido_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">curso_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">documento_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">domicilio_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tel_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nac_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edad_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">mail_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">showinfo</span><span class="p">(</span><span class="s2">&quot;INFORMACION&quot;</span><span class="p">,</span> <span class="n">retorno</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="Ventanita.show_modificar">
+<a class="viewcode-back" href="../vista.html#vista.Ventanita.show_modificar">[docs]</a>
+    <span class="k">def</span> <span class="nf">show_modificar</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Llama al metodo modificar para actualizar los datos en la base de datos</span>
+<span class="sd">          </span>
+<span class="sd">        Este método recoge los datos del registro seleccionado en el treeview </span>
+<span class="sd">        y llama al método `modificar` de `objeto_base`. </span>
+<span class="sd">        Si hubo algun cambio (alta, baja o modificacion) graf es True,</span>
+<span class="sd">        se actualiza el treeview y el gráfico con los datos resultantes,</span>
+<span class="sd">        y restablece los campos de entrada. </span>
+<span class="sd">        Muestra un mensaje informativo si se procedio con la modificacion</span>
+<span class="sd">        o de advertencia si hubo algun error de carga de datos. </span>
+<span class="sd">        </span>
+<span class="sd">        Args: </span>
+<span class="sd">            None </span>
+
+<span class="sd">        Returns: </span>
+<span class="sd">            None </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">valor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">selection</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">valor</span><span class="p">:</span>
+            <span class="n">showwarning</span><span class="p">(</span><span class="s2">&quot;ADVERTENCIA&quot;</span><span class="p">,</span> <span class="s2">&quot;Por favor seleccione una fila para consultar.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+                
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">valor</span><span class="p">)</span>
+        <span class="n">retorno</span><span class="p">,</span> <span class="n">resultado</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objeto_base</span><span class="o">.</span><span class="n">modificar</span><span class="p">(</span><span class="n">item</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nombre_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">apellido_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">curso_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">documento_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">domicilio_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tel_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nac_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mail_val</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+                      
+           
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">graf</span><span class="p">:</span>       
+            <span class="bp">self</span><span class="o">.</span><span class="n">actualizar_grafico</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tamano</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">actualizar_treeview</span><span class="p">(</span><span class="n">resultado</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nombre_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">apellido_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">curso_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">documento_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">domicilio_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tel_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nac_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mail_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edad_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+            <span class="n">showinfo</span><span class="p">(</span><span class="s2">&quot;INFORMACION&quot;</span><span class="p">,</span> <span class="n">retorno</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">showwarning</span><span class="p">(</span><span class="s2">&quot;ADVERTENCIA&quot;</span><span class="p">,</span><span class="n">retorno</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Ventanita.show_consultar">
+<a class="viewcode-back" href="../vista.html#vista.Ventanita.show_consultar">[docs]</a>
+    <span class="k">def</span> <span class="nf">show_consultar</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>      
+<span class="w">    </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Consulta y muestra la información de un alumno.</span>
+<span class="sd">        Llama al método `consultar` de `objeto_base` para obtener la información de un alumno.</span>
+<span class="sd">        Corrobora que se haya seleccionado una fila en el treeview. </span>
+<span class="sd">        El método `consultar` retorna un string con la información a ser desplegada en pantalla </span>
+<span class="sd">        y la edad del alumno. La edad se muestra en el widget correspondiente y se despliega la información en pantalla.</span>
+<span class="sd">         </span>
+<span class="sd">        Args: </span>
+<span class="sd">            None </span>
+
+<span class="sd">        Returns: </span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">retorno</span><span class="p">,</span> <span class="n">edad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objeto_base</span><span class="o">.</span><span class="n">consultar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edad_val</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">edad</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> años, </span><span class="si">{</span><span class="n">edad</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> meses, </span><span class="si">{</span><span class="n">edad</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2"> días&quot;</span><span class="p">)</span>
+        <span class="n">showinfo</span><span class="p">(</span><span class="s2">&quot;INFORMACION&quot;</span><span class="p">,</span> <span class="n">retorno</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+    
+<div class="viewcode-block" id="Ventanita.lanzar_servidor">
+<a class="viewcode-back" href="../vista.html#vista.Ventanita.lanzar_servidor">[docs]</a>
+    <span class="k">def</span> <span class="nf">lanzar_servidor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">var</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Lanza el servidor.</span>
+
+<span class="sd">    Llama al método `subprocess.Popen` para iniciar el servidor.</span>
+<span class="sd">    Muestra un mensaje de información si el servidor se lanza correctamente.</span>
+<span class="sd">    Muestra una advertencia si no se puede lanzar el servidor.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        var (bool): Indica si se debe lanzar el servidor.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>        
+        <span class="n">the_path</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">ruta_server</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;VAR&quot;</span><span class="p">,</span><span class="n">var</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">var</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">theproc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="n">the_path</span><span class="p">])</span>
+            <span class="n">showinfo</span><span class="p">(</span><span class="s2">&quot;INFORMACION&quot;</span><span class="p">,</span><span class="s2">&quot;SERVIDOR LANZADO&quot;</span><span class="p">)</span>
+            <span class="n">ic</span><span class="p">(</span><span class="s2">&quot;SERVIDOR LANZADO&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">theproc</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">showwarning</span><span class="p">(</span><span class="s2">&quot;ADVERTENCIA&quot;</span><span class="p">,</span><span class="s2">&quot;NO SE PUDO LANZAR EL SERVIDOR&quot;</span><span class="p">)</span> 
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;NO SE PUDO LANZAR EL SERVIDOR&quot;</span><span class="p">)</span>    </div>
+
+
+    
+<div class="viewcode-block" id="Ventanita.apagar_servidor">
+<a class="viewcode-back" href="../vista.html#vista.Ventanita.apagar_servidor">[docs]</a>
+    <span class="k">def</span> <span class="nf">apagar_servidor</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Apaga el servidor.</span>
+
+<span class="sd">    Llama al método `kill` del proceso del servidor para detenerlo.</span>
+<span class="sd">    Muestra un mensaje de información si el servidor se apaga correctamente.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        None</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">theproc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">theproc</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+            <span class="n">showinfo</span><span class="p">(</span><span class="s2">&quot;INFORMACION&quot;</span><span class="p">,</span><span class="s2">&quot;SERVIDOR APAGADO&quot;</span><span class="p">)</span>
+            <span class="n">ic</span><span class="p">(</span><span class="s2">&quot;SERVIDOR APAGADO&quot;</span><span class="p">)</span>        </div>
+
+
+<div class="viewcode-block" id="Ventanita.try_connection">
+<a class="viewcode-back" href="../vista.html#vista.Ventanita.try_connection">[docs]</a>
+    <span class="k">def</span> <span class="nf">try_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">):</span> 
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Intenta conectar y lanzar el servidor.</span>
+
+<span class="sd">    Llama al método `lanzar_servidor` en un hilo separado.</span>
+<span class="sd">    Si el servidor ya está en ejecución, lo detiene antes de intentar lanzarlo de nuevo.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        None</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+        <span class="n">ic</span><span class="p">(</span><span class="s2">&quot;lanzando servidor&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">theproc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">theproc</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>            
+            <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lanzar_servidor</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,),</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lanzar_servidor</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="kc">True</span><span class="p">,),</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+</div>
+
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">MiProyecto</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cliente1.html">cliente1 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../con_regex.html">con_regex module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../controlador.html">controlador module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modelo.html">modelo module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../observador.html">observador module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../servidor1.html">servidor1 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vista.html">vista module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Claudio.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

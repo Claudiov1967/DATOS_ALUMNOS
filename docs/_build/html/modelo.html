@@ -1,0 +1,423 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>modelo module &mdash; documentación de MiProyecto - 0.0.1</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=6fcc102b"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=f85f4cfb"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="observador module" href="observador.html" />
+    <link rel="prev" title="controlador module" href="controlador.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            MiProyecto
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="cliente1.html">cliente1 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="con_regex.html">con_regex module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="controlador.html">controlador module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">modelo module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#modelo.Abmc"><code class="docutils literal notranslate"><span class="pre">Abmc</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.Abmc.alta"><code class="docutils literal notranslate"><span class="pre">Abmc.alta()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.Abmc.alumnos_cursos"><code class="docutils literal notranslate"><span class="pre">Abmc.alumnos_cursos()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.Abmc.borrar"><code class="docutils literal notranslate"><span class="pre">Abmc.borrar()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.Abmc.calcular_edad"><code class="docutils literal notranslate"><span class="pre">Abmc.calcular_edad()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.Abmc.consultar"><code class="docutils literal notranslate"><span class="pre">Abmc.consultar()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.Abmc.modificar"><code class="docutils literal notranslate"><span class="pre">Abmc.modificar()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#modelo.Alumno2"><code class="docutils literal notranslate"><span class="pre">Alumno2</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.Alumno2.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">Alumno2.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.Alumno2.apellido"><code class="docutils literal notranslate"><span class="pre">Alumno2.apellido</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.Alumno2.curso"><code class="docutils literal notranslate"><span class="pre">Alumno2.curso</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.Alumno2.documento"><code class="docutils literal notranslate"><span class="pre">Alumno2.documento</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.Alumno2.domicilio"><code class="docutils literal notranslate"><span class="pre">Alumno2.domicilio</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.Alumno2.id"><code class="docutils literal notranslate"><span class="pre">Alumno2.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.Alumno2.mail"><code class="docutils literal notranslate"><span class="pre">Alumno2.mail</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.Alumno2.nacimiento"><code class="docutils literal notranslate"><span class="pre">Alumno2.nacimiento</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.Alumno2.nombre"><code class="docutils literal notranslate"><span class="pre">Alumno2.nombre</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.Alumno2.telefono"><code class="docutils literal notranslate"><span class="pre">Alumno2.telefono</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#modelo.BaseModel"><code class="docutils literal notranslate"><span class="pre">BaseModel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.BaseModel.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">BaseModel.DoesNotExist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.BaseModel.id"><code class="docutils literal notranslate"><span class="pre">BaseModel.id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#modelo.RegistroLog"><code class="docutils literal notranslate"><span class="pre">RegistroLog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.RegistroLog.ingresar_documento"><code class="docutils literal notranslate"><span class="pre">RegistroLog.ingresar_documento()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modelo.RegistroLog.registrar_error"><code class="docutils literal notranslate"><span class="pre">RegistroLog.registrar_error()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#modelo.actualizacion"><code class="docutils literal notranslate"><span class="pre">actualizacion()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#modelo.eliminacion"><code class="docutils literal notranslate"><span class="pre">eliminacion()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#modelo.ingreso"><code class="docutils literal notranslate"><span class="pre">ingreso()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="observador.html">observador module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="servidor1.html">servidor1 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vista.html">vista module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MiProyecto</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">modelo module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modelo.rst.txt" rel="nofollow"> Ver código fuente de la página</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-modelo">
+<span id="modelo-module"></span><h1>modelo module<a class="headerlink" href="#module-modelo" title="Link to this heading"></a></h1>
+<p>Modelo de la Aplicacion
+Contiene la logica 
+Interactua con la base de datos</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="modelo.Abmc">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modelo.</span></span><span class="sig-name descname"><span class="pre">Abmc</span></span><a class="reference internal" href="_modules/modelo.html#Abmc"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#modelo.Abmc" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="observador.html#observador.Subject" title="observador.Subject"><code class="xref py py-class docutils literal notranslate"><span class="pre">Subject</span></code></a></p>
+<p>Class para la gestion de alumnos en la base de datos</p>
+<p>Methods:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>alta(nombre, apellido, curso, documento, domicilio, telefono, nacimiento, mail, app): </dt><dd><p>Añade un nuevo alumno a la base de datos.</p>
+</dd>
+<dt>alumnos_cursos(app): </dt><dd><p>Recupera la lista de alumnos y sus documentos.</p>
+</dd>
+<dt>borrar(tree, app): </dt><dd><p>Elimina un alumno de la base de datos.</p>
+</dd>
+<dt>modificar(item, nombre, apellido, curso, documento, domicilio, telefono, nacimiento, mail, app):</dt><dd><p>Modifica los datos de un alumno en la base de datos.</p>
+</dd>
+<dt>consultar(treeview, app): </dt><dd><p>Consulta los datos de un alumno específico.</p>
+</dd>
+<dt>calcular_edad(fecha): </dt><dd><p>Calcula la edad de una persona dada su fecha de nacimiento</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelo.Abmc.alta">
+<span class="sig-name descname"><span class="pre">alta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelo.html#Abmc.alta"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#modelo.Abmc.alta" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelo.Abmc.alumnos_cursos">
+<span class="sig-name descname"><span class="pre">alumnos_cursos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelo.html#Abmc.alumnos_cursos"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#modelo.Abmc.alumnos_cursos" title="Link to this definition"></a></dt>
+<dd><p>Crea dos listas
+Una con todos los datos de los alumnos de la base de datos para actualizar el treeview
+Otra lista de documentos (DNI) de los alumnos en la base de datos
+Calcula la cantidad de alumnos en cada curso y actualiza la lista tamaño</p>
+<dl>
+<dt>Args:        </dt><dd><p>app (object): la instancia de la clase Ventanita</p>
+</dd>
+<dt>Returns:</dt><dd><p>tuple: Un tuple que contiene un string y una lista:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>resultado (list): Una lista con todos los datos en la DB para actualizar el treeview.</p></li>
+<li><p>documentos (list): Una lista con todos los documentos (DNI) en la base de datos.</p></li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelo.Abmc.borrar">
+<span class="sig-name descname"><span class="pre">borrar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelo.html#Abmc.borrar"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#modelo.Abmc.borrar" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelo.Abmc.calcular_edad">
+<span class="sig-name descname"><span class="pre">calcular_edad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fecha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelo.html#Abmc.calcular_edad"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#modelo.Abmc.calcular_edad" title="Link to this definition"></a></dt>
+<dd><p>Calcula la edad del alumno</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>fecha (str): fecha de nacimiento del alumno en formato “dd/mm/yy”</p>
+</dd>
+<dt>Returns: </dt><dd><ul class="simple">
+<li><p>edad (str): la edad del alumno en dias, meses y años</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelo.Abmc.consultar">
+<span class="sig-name descname"><span class="pre">consultar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">treeview</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelo.html#Abmc.consultar"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#modelo.Abmc.consultar" title="Link to this definition"></a></dt>
+<dd><p>Consulta un registro en la base de datos y despliega los datos en los Entries</p>
+<dl>
+<dt>Args:</dt><dd><p>treeview (object): El treeview de tkinter de los alumnos</p>
+<p>app (object): Instancia de la clase Ventanita</p>
+</dd>
+<dt>Returns:</dt><dd><p>tuple: Un tuple que contiene dos strings:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>retorno (string): tiene la informacion para ser mostrada en pantalla en VISTA</p></li>
+<li><p>edad (string): la edad del alumno en dias, meses y años</p></li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelo.Abmc.modificar">
+<span class="sig-name descname"><span class="pre">modificar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelo.html#Abmc.modificar"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#modelo.Abmc.modificar" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelo.Alumno2">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modelo.</span></span><span class="sig-name descname"><span class="pre">Alumno2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelo.html#Alumno2"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#modelo.Alumno2" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#modelo.BaseModel" title="modelo.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></a></p>
+<p>Clase que representa a un alumno.</p>
+<p>Esta clase define los atributos de un alumno que serian registrados 
+en la base de datos</p>
+<dl>
+<dt>Attributes:</dt><dd><p>nombre (Charfield): Nombre del alumno</p>
+<p>apellido (Charfield): apellido del alumno</p>
+<p>curso (Charfield): curso que concurre el alumno</p>
+<p>documento (Charfield): DNI del alumno</p>
+<p>domicilio (Charfield): domicilio del alumno</p>
+<p>telefono (Charfield): teléfono del alumno</p>
+<p>nacimiento (Charfield): fecha de nacimiento del alumno</p>
+<p>mail (Charfield): correo electrónico del alumno</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelo.Alumno2.DoesNotExist">
+<span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#modelo.Alumno2.DoesNotExist" title="Link to this definition"></a></dt>
+<dd><p>alias de <code class="xref py py-class docutils literal notranslate"><span class="pre">Alumno2DoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelo.Alumno2.apellido">
+<span class="sig-name descname"><span class="pre">apellido</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">Alumno2.apellido&gt;</span></em><a class="headerlink" href="#modelo.Alumno2.apellido" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelo.Alumno2.curso">
+<span class="sig-name descname"><span class="pre">curso</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">Alumno2.curso&gt;</span></em><a class="headerlink" href="#modelo.Alumno2.curso" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelo.Alumno2.documento">
+<span class="sig-name descname"><span class="pre">documento</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">Alumno2.documento&gt;</span></em><a class="headerlink" href="#modelo.Alumno2.documento" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelo.Alumno2.domicilio">
+<span class="sig-name descname"><span class="pre">domicilio</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">Alumno2.domicilio&gt;</span></em><a class="headerlink" href="#modelo.Alumno2.domicilio" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelo.Alumno2.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;AutoField:</span> <span class="pre">Alumno2.id&gt;</span></em><a class="headerlink" href="#modelo.Alumno2.id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelo.Alumno2.mail">
+<span class="sig-name descname"><span class="pre">mail</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">Alumno2.mail&gt;</span></em><a class="headerlink" href="#modelo.Alumno2.mail" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelo.Alumno2.nacimiento">
+<span class="sig-name descname"><span class="pre">nacimiento</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">Alumno2.nacimiento&gt;</span></em><a class="headerlink" href="#modelo.Alumno2.nacimiento" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelo.Alumno2.nombre">
+<span class="sig-name descname"><span class="pre">nombre</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">Alumno2.nombre&gt;</span></em><a class="headerlink" href="#modelo.Alumno2.nombre" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelo.Alumno2.telefono">
+<span class="sig-name descname"><span class="pre">telefono</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CharField:</span> <span class="pre">Alumno2.telefono&gt;</span></em><a class="headerlink" href="#modelo.Alumno2.telefono" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="modelo.BaseModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modelo.</span></span><span class="sig-name descname"><span class="pre">BaseModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelo.html#BaseModel"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#modelo.BaseModel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Clase BaseModel</p>
+<p>Clase base para definir los modelos de la base de datos
+Todas las demás clases de modelos deben heredar de esta clase</p>
+<p>Attributes:</p>
+<blockquote>
+<div><p>Meta: Metaclase que define la base de datos a utilizar</p>
+</div></blockquote>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelo.BaseModel.DoesNotExist">
+<span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#modelo.BaseModel.DoesNotExist" title="Link to this definition"></a></dt>
+<dd><p>alias de <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModelDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modelo.BaseModel.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;AutoField:</span> <span class="pre">BaseModel.id&gt;</span></em><a class="headerlink" href="#modelo.BaseModel.id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="modelo.RegistroLog">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modelo.</span></span><span class="sig-name descname"><span class="pre">RegistroLog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nombre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apellido</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">documento</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fecha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelo.html#RegistroLog"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#modelo.RegistroLog" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Clase para manejar excepciones de registro de logs. 
+Esta clase extiende la clase <cite>Exception</cite> para manejar los errores 
+relacionados con el registro de logs en el sistema.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="modelo.RegistroLog.ingresar_documento">
+<span class="sig-name descname"><span class="pre">ingresar_documento</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">documentos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelo.html#RegistroLog.ingresar_documento"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#modelo.RegistroLog.ingresar_documento" title="Link to this definition"></a></dt>
+<dd><p>Verifica y registra el documento del alumno.</p>
+<p>Este método verifica si el documento del alumno ya está en la lista
+de documentos. 
+Si el documento ya existe, lanza una excepción 
+<cite>RegistroLogError</cite> con la información del alumno y la fecha actual.</p>
+<dl>
+<dt>Args:</dt><dd><p>self: La instancia de la clase que llama al método.</p>
+<p>documentos (list): Lista de documentos existentes.</p>
+</dd>
+<dt>Raises:</dt><dd><p>RegistroLogError: Si el documento del alumno ya existe en la lista.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None: No retorna nada.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modelo.RegistroLog.registrar_error">
+<span class="sig-name descname"><span class="pre">registrar_error</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelo.html#RegistroLog.registrar_error"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#modelo.RegistroLog.registrar_error" title="Link to this definition"></a></dt>
+<dd><p>Registra un error en el archivo log.</p>
+<p>Escribe un mensaje en el archivo log con la información del alumno 
+y la fecha del error.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelo.actualizacion">
+<span class="sig-prename descclassname"><span class="pre">modelo.</span></span><span class="sig-name descname"><span class="pre">actualizacion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">funcion</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelo.html#actualizacion"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#modelo.actualizacion" title="Link to this definition"></a></dt>
+<dd><p>Decorador que registra la información sobre la actualización 
+de datos en un archivo log.</p>
+<dl class="simple">
+<dt>Args: </dt><dd><p>funcion (function): La función a decorar.</p>
+</dd>
+<dt>Returns: </dt><dd><p>function: La función decorada.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelo.eliminacion">
+<span class="sig-prename descclassname"><span class="pre">modelo.</span></span><span class="sig-name descname"><span class="pre">eliminacion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">funcion</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelo.html#eliminacion"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#modelo.eliminacion" title="Link to this definition"></a></dt>
+<dd><p>Decorador que registra la información sobre la eliminación de datos
+en un archivo log.</p>
+<dl class="simple">
+<dt>Args: </dt><dd><p>funcion (function): La función a decorar.</p>
+</dd>
+<dt>Returns: </dt><dd><p>function: La función decorada.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="modelo.ingreso">
+<span class="sig-prename descclassname"><span class="pre">modelo.</span></span><span class="sig-name descname"><span class="pre">ingreso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">funcion</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelo.html#ingreso"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#modelo.ingreso" title="Link to this definition"></a></dt>
+<dd><p>Decorador que registra la información sobre el ingreso de datos 
+en un archivo log.</p>
+<dl class="simple">
+<dt>Args: </dt><dd><p>funcion (function): La función a decorar.</p>
+</dd>
+<dt>Returns: </dt><dd><p>function: La función decorada.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pie de página">
+        <a href="controlador.html" class="btn btn-neutral float-left" title="controlador module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="observador.html" class="btn btn-neutral float-right" title="observador module" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, Claudio.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

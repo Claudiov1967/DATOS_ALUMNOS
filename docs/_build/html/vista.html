@@ -1,0 +1,376 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vista module &mdash; documentación de MiProyecto - 0.0.1</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=6fcc102b"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=f85f4cfb"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="prev" title="servidor1 module" href="servidor1.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            MiProyecto
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="cliente1.html">cliente1 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="con_regex.html">con_regex module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="controlador.html">controlador module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modelo.html">modelo module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="observador.html">observador module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="servidor1.html">servidor1 module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">vista module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#vista.Ventanita"><code class="docutils literal notranslate"><span class="pre">Ventanita</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#vista.Ventanita.actualizar"><code class="docutils literal notranslate"><span class="pre">Ventanita.actualizar()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vista.Ventanita.actualizar_grafico"><code class="docutils literal notranslate"><span class="pre">Ventanita.actualizar_grafico()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vista.Ventanita.actualizar_treeview"><code class="docutils literal notranslate"><span class="pre">Ventanita.actualizar_treeview()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vista.Ventanita.apagar_servidor"><code class="docutils literal notranslate"><span class="pre">Ventanita.apagar_servidor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vista.Ventanita.cambiar_colores"><code class="docutils literal notranslate"><span class="pre">Ventanita.cambiar_colores()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vista.Ventanita.elegir_fecha"><code class="docutils literal notranslate"><span class="pre">Ventanita.elegir_fecha()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vista.Ventanita.lanzar_servidor"><code class="docutils literal notranslate"><span class="pre">Ventanita.lanzar_servidor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vista.Ventanita.show_alta"><code class="docutils literal notranslate"><span class="pre">Ventanita.show_alta()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vista.Ventanita.show_borrar"><code class="docutils literal notranslate"><span class="pre">Ventanita.show_borrar()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vista.Ventanita.show_consultar"><code class="docutils literal notranslate"><span class="pre">Ventanita.show_consultar()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vista.Ventanita.show_modificar"><code class="docutils literal notranslate"><span class="pre">Ventanita.show_modificar()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vista.Ventanita.try_connection"><code class="docutils literal notranslate"><span class="pre">Ventanita.try_connection()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MiProyecto</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">vista module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/vista.rst.txt" rel="nofollow"> Ver código fuente de la página</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-vista">
+<span id="vista-module"></span><h1>vista module<a class="headerlink" href="#module-vista" title="Link to this heading"></a></h1>
+<p>Vista de la aplicacion
+Muestra la información a los usuarios y maneja la interacción con ellos</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="vista.Ventanita">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">vista.</span></span><span class="sig-name descname"><span class="pre">Ventanita</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nombres</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tamano</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vista.html#Ventanita"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#vista.Ventanita" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Clase que crea una ventana de gestión de datos e ingresos de alumnos.</p>
+<dl>
+<dt>Args:      </dt><dd><p>window (tkinter.Tk): Ventana principal de Tkinter.</p>
+<p>nombres (list): Lista de nombres de alumnos.</p>
+<p>colores (list): Lista de colores para cada barra en el gráfico.</p>
+<p>tamano (list): Lista de tamaños para cada barra en el gráfico.</p>
+<p>graf (bool): Determina si se actualizará el gráfico (default es True).</p>
+</dd>
+</dl>
+<p>Attributes:</p>
+<blockquote>
+<div><p>root (tkinter.Tk): Ventana principal de Tkinter.</p>
+<p>nombres (list): Lista de nombres de alumnos.</p>
+<p>colores (list): Lista de colores para cada barra en el gráfico.</p>
+<p>tamano (list): Lista de tamaños para cada barra en el gráfico.</p>
+<p>graf (bool): Determina si se mostrará el gráfico.</p>
+<p>nombre_val (tkinter.StringVar): Variable String para el nombre.</p>
+<p>apellido_val (tkinter.StringVar): Variable String para el apellido.</p>
+<p>curso_val (tkinter.StringVar): Variable String para el curso.</p>
+<p>documento_val (tkinter.StringVar): Variable String para el documento.</p>
+<p>domicilio_val (tkinter.StringVar): Variable String para el domicilio.</p>
+<p>tel_val (tkinter.StringVar): Variable String para el teléfono.</p>
+<p>nac_val (tkinter.StringVar): Variable String para la fecha de nacimiento.</p>
+<p>mail_val (tkinter.StringVar): Variable String para el email.</p>
+<p>edad_val (tkinter.StringVar): Variable String para la edad.</p>
+<p>objeto_base (Abmc): Objeto base para la gestión de alumnos.</p>
+</div></blockquote>
+<p>Méthods:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>cambiar_colores(): </dt><dd><p>Cambia el color de fondo de la ventana a un color aleatorio.</p>
+</dd>
+<dt>elegir_fecha(): </dt><dd><p>Formatea y establece la fecha seleccionada en el calendario.</p>
+</dd>
+<dt>show_alta():</dt><dd><p>Muestra el proceso de alta de un alumno.</p>
+</dd>
+<dt>actualizar_treeview(resultado): </dt><dd><p>Actualiza el treeview con los resultados proporcionados.</p>
+</dd>
+<dt>actualizar_grafico(tamano): </dt><dd><p>Actualiza el gráfico con los tamaños proporcionados.</p>
+</dd>
+<dt>actualizar(): </dt><dd><p>Actualiza el treeview y el gráfico con datos actuales.</p>
+</dd>
+<dt>show_borrar(): </dt><dd><p>Muestra el proceso de borrado de un alumno.</p>
+</dd>
+<dt>show_modificar(): </dt><dd><p>Muestra el proceso de modificación de datos de un alumno.</p>
+</dd>
+<dt>show_consultar(): </dt><dd><p>Muestra el proceso de consulta de datos de un alumno.</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="vista.Ventanita.actualizar">
+<span class="sig-name descname"><span class="pre">actualizar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vista.html#Ventanita.actualizar"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#vista.Ventanita.actualizar" title="Link to this definition"></a></dt>
+<dd><p>Actualiza el treeview y el gráfico con datos actuales. 
+Llama al método <cite>alumnos_cursos</cite> de <cite>objeto_base</cite> para obtener 
+los datos actuales de los alumnos y cursos. 
+Luego, actualiza el treeview y el gráfico con los resultados obtenidos.</p>
+<dl class="simple">
+<dt>Args: </dt><dd><p>None</p>
+</dd>
+<dt>Returns: </dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vista.Ventanita.actualizar_grafico">
+<span class="sig-name descname"><span class="pre">actualizar_grafico</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tamano</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vista.html#Ventanita.actualizar_grafico"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#vista.Ventanita.actualizar_grafico" title="Link to this definition"></a></dt>
+<dd><p>Actualiza el gráfico con los tamaños proporcionados. 
+Limpia el gráfico actual y dibuja un nuevo gráfico de barras 
+con los nombres y tamaños proporcionados. 
+Luego, redibuja el gráfico en el canvas.</p>
+<dl class="simple">
+<dt>Args: </dt><dd><p>tamano (list): Lista de tamaños para cada barra en el gráfico.</p>
+</dd>
+<dt>Returns: </dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vista.Ventanita.actualizar_treeview">
+<span class="sig-name descname"><span class="pre">actualizar_treeview</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resultado</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vista.html#Ventanita.actualizar_treeview"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#vista.Ventanita.actualizar_treeview" title="Link to this definition"></a></dt>
+<dd><p>Actualiza el treeview con los resultados proporcionados. 
+Elimina todos los registros actuales en el treeview y luego inserta
+los nuevos registros desde los resultados.</p>
+<p>Args:</p>
+<blockquote>
+<div><p>resultado (list): Lista de tuplas con los datos de los registros 
+a insertar en el treeview.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns: </dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vista.Ventanita.apagar_servidor">
+<span class="sig-name descname"><span class="pre">apagar_servidor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vista.html#Ventanita.apagar_servidor"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#vista.Ventanita.apagar_servidor" title="Link to this definition"></a></dt>
+<dd><p>Apaga el servidor.</p>
+<p>Llama al método <cite>kill</cite> del proceso del servidor para detenerlo.
+Muestra un mensaje de información si el servidor se apaga correctamente.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vista.Ventanita.cambiar_colores">
+<span class="sig-name descname"><span class="pre">cambiar_colores</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vista.html#Ventanita.cambiar_colores"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#vista.Ventanita.cambiar_colores" title="Link to this definition"></a></dt>
+<dd><p>Cambia el color de fondo de la ventana a un color aleatorio
+Se selecciona un color aleatorio de una lista predefinida de colores y
+se aplica como color de fondo de la ventana principal.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vista.Ventanita.elegir_fecha">
+<span class="sig-name descname"><span class="pre">elegir_fecha</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vista.html#Ventanita.elegir_fecha"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#vista.Ventanita.elegir_fecha" title="Link to this definition"></a></dt>
+<dd><p>Llena el widget nac_val con la fecha seleccionada en el calendario
+La fecha esta en el formato dd/mm/yy
+Se establece en la variable <cite>nac_val</cite></p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><p>None: No retorna nada.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vista.Ventanita.lanzar_servidor">
+<span class="sig-name descname"><span class="pre">lanzar_servidor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vista.html#Ventanita.lanzar_servidor"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#vista.Ventanita.lanzar_servidor" title="Link to this definition"></a></dt>
+<dd><p>Lanza el servidor.</p>
+<p>Llama al método <cite>subprocess.Popen</cite> para iniciar el servidor.
+Muestra un mensaje de información si el servidor se lanza correctamente.
+Muestra una advertencia si no se puede lanzar el servidor.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>var (bool): Indica si se debe lanzar el servidor.</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vista.Ventanita.show_alta">
+<span class="sig-name descname"><span class="pre">show_alta</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vista.html#Ventanita.show_alta"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#vista.Ventanita.show_alta" title="Link to this definition"></a></dt>
+<dd><p>Llama al metodo alta para hacer el alta de un alumno. 
+Este método recoge los datos de los campos de entrada y llama al método <cite>alta</cite> de <cite>objeto_base</cite>.
+Si hubo algun cambio (alta, baja o modificacion) graf es True,
+se actualiza el treeview y el gráfico con los datos resultantes,
+y restablece los campos de entrada. 
+Muestra un mensaje informativo si se procedio con el alta
+o de advertencia si hubo algun error de carga de datos</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vista.Ventanita.show_borrar">
+<span class="sig-name descname"><span class="pre">show_borrar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vista.html#Ventanita.show_borrar"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#vista.Ventanita.show_borrar" title="Link to this definition"></a></dt>
+<dd><p>Elimina un alumno de la base de datos. 
+Este método llama al método <cite>borrar</cite> de <cite>objeto_base</cite> para eliminar 
+un registro seleccionado en el treeview. Si el gráfico está habilitado,
+actualiza el treeview y el gráfico con los datos resultantes. 
+Muestra un mensaje de informacion.</p>
+<dl class="simple">
+<dt>Args: </dt><dd><p>None</p>
+</dd>
+<dt>Returns: </dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vista.Ventanita.show_consultar">
+<span class="sig-name descname"><span class="pre">show_consultar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vista.html#Ventanita.show_consultar"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#vista.Ventanita.show_consultar" title="Link to this definition"></a></dt>
+<dd><p>Consulta y muestra la información de un alumno.
+Llama al método <cite>consultar</cite> de <cite>objeto_base</cite> para obtener la información de un alumno.
+Corrobora que se haya seleccionado una fila en el treeview. 
+El método <cite>consultar</cite> retorna un string con la información a ser desplegada en pantalla 
+y la edad del alumno. La edad se muestra en el widget correspondiente y se despliega la información en pantalla.</p>
+<dl class="simple">
+<dt>Args: </dt><dd><p>None</p>
+</dd>
+<dt>Returns: </dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vista.Ventanita.show_modificar">
+<span class="sig-name descname"><span class="pre">show_modificar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vista.html#Ventanita.show_modificar"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#vista.Ventanita.show_modificar" title="Link to this definition"></a></dt>
+<dd><p>Llama al metodo modificar para actualizar los datos en la base de datos</p>
+<p>Este método recoge los datos del registro seleccionado en el treeview 
+y llama al método <cite>modificar</cite> de <cite>objeto_base</cite>. 
+Si hubo algun cambio (alta, baja o modificacion) graf es True,
+se actualiza el treeview y el gráfico con los datos resultantes,
+y restablece los campos de entrada. 
+Muestra un mensaje informativo si se procedio con la modificacion
+o de advertencia si hubo algun error de carga de datos.</p>
+<dl class="simple">
+<dt>Args: </dt><dd><p>None</p>
+</dd>
+<dt>Returns: </dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="vista.Ventanita.try_connection">
+<span class="sig-name descname"><span class="pre">try_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vista.html#Ventanita.try_connection"><span class="viewcode-link"><span class="pre">[fuente]</span></span></a><a class="headerlink" href="#vista.Ventanita.try_connection" title="Link to this definition"></a></dt>
+<dd><p>Intenta conectar y lanzar el servidor.</p>
+<p>Llama al método <cite>lanzar_servidor</cite> en un hilo separado.
+Si el servidor ya está en ejecución, lo detiene antes de intentar lanzarlo de nuevo.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pie de página">
+        <a href="servidor1.html" class="btn btn-neutral float-left" title="servidor1 module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, Claudio.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

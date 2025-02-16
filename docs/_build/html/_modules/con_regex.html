@@ -1,0 +1,191 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>con_regex &mdash; documentación de MiProyecto - 0.0.1</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=6fcc102b"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/translations.js?v=f85f4cfb"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Búsqueda" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            MiProyecto
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" aria-label="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cliente1.html">cliente1 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../con_regex.html">con_regex module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../controlador.html">controlador module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modelo.html">modelo module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../observador.html">observador module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../servidor1.html">servidor1 module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vista.html">vista module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MiProyecto</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Código de módulo</a></li>
+      <li class="breadcrumb-item active">con_regex</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código fuente para con_regex</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">re</span>
+
+
+
+<div class="viewcode-block" id="validar_datos">
+<a class="viewcode-back" href="../con_regex.html#con_regex.validar_datos">[documentos]</a>
+<span class="k">def</span> <span class="nf">validar_datos</span><span class="p">(</span><span class="n">nombre</span><span class="p">,</span> <span class="n">apellido</span><span class="p">,</span> <span class="n">curso</span><span class="p">,</span> <span class="n">documento</span><span class="p">,</span> <span class="n">domicilio</span><span class="p">,</span> <span class="n">telefono</span><span class="p">,</span> <span class="n">nacimiento</span><span class="p">,</span> <span class="n">mail</span><span class="p">,</span><span class="n">edad</span><span class="p">):</span> 
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Valida los datos ingresados para un alumno.</span>
+
+<span class="sd">    Este método utiliza expresiones regulares para validar los datos ingresados en los campos de nombre, apellido, curso, documento, domicilio, teléfono, nacimiento y mail. También verifica que la edad sea mayor a 5 años.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        nombre (StringVar): Nombre del alumno.</span>
+
+<span class="sd">        apellido (StringVar): Apellido del alumno.</span>
+
+<span class="sd">        curso (StringVar): Curso al que concurre el alumno.</span>
+
+<span class="sd">        documento (StringVar): DNI del alumno.</span>
+
+<span class="sd">        domicilio (StringVar): Dirección del alumno.</span>
+
+<span class="sd">        telefono (StringVar): Teléfono del alumno.</span>
+
+<span class="sd">        nacimiento (StringVar): Fecha de nacimiento del alumno.</span>
+
+<span class="sd">        mail (StringVar): Email del alumno.</span>
+
+<span class="sd">        edad (int): Edad del alumno.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: Un tuple que contiene un string y una lista si hay errores de validación:</span>
+
+<span class="sd">            - mensaje (str): Mensaje de error de validación.</span>
+<span class="sd">            </span>
+<span class="sd">            - datos (list): Lista con los datos ingresados.</span>
+<span class="sd">        None: Si todos los datos son válidos.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+   
+    <span class="c1">#resultado =[]      </span>
+    <span class="n">values</span><span class="o">=</span> <span class="p">(</span><span class="s1">&#39;egb&#39;</span><span class="p">,</span><span class="s1">&#39;cfi&#39;</span><span class="p">,</span><span class="s1">&#39;superior&#39;</span><span class="p">,</span><span class="s1">&#39;integracion&#39;</span><span class="p">,</span><span class="s1">&#39;ex&#39;</span><span class="p">)</span>       
+    <span class="c1">###############################  REGEX   ###################################</span>
+    <span class="c1"># controla que en todos los entries se hayan ingresado datos</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">nombre</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">apellido</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span> <span class="ow">or</span> <span class="n">curso</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">documento</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">domicilio</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">telefono</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">nacimiento</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="n">mail</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">==</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="c1">#app.graf =False</span>
+        <span class="k">return</span> <span class="s2">&quot;Por favor debe llenar todos los entries.&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">nombre</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">apellido</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">curso</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">documento</span><span class="o">.</span><span class="n">get</span><span class="p">()]</span>
+    
+    <span class="c1"># Expresión regular para exactamente 10 dígitos para telefono</span>
+    <span class="c1"># Validar si la cadena coincide con el patrón</span>
+    <span class="n">patron_num</span> <span class="o">=</span> <span class="s2">&quot;^([0-9]</span><span class="si">{10}</span><span class="s2">)$&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patron_num</span><span class="p">,</span> <span class="n">telefono</span><span class="o">.</span><span class="n">get</span><span class="p">()):</span>                
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Debe ser un numero de 10 digitos&quot;</span><span class="p">)</span>
+        <span class="c1">#app.graf =False</span>
+        <span class="k">return</span> <span class="s2">&quot;El telefono debe ser un numero de 10 digitos&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">nombre</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">apellido</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">curso</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">documento</span><span class="o">.</span><span class="n">get</span><span class="p">()]</span>
+    
+    <span class="c1"># Expresión regular para exactamente 8 dígitos para documento</span>
+    <span class="c1"># Validar si la cadena coincide con el patrón</span>
+    <span class="n">patron_num</span> <span class="o">=</span> <span class="s2">&quot;^([0-9]</span><span class="si">{8}</span><span class="s2">)$&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patron_num</span><span class="p">,</span> <span class="n">documento</span><span class="o">.</span><span class="n">get</span><span class="p">()):</span>                
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Debe ser un numero de 8 digitos&quot;</span><span class="p">)</span>
+        <span class="c1">#app.graf = False</span>
+        <span class="k">return</span> <span class="s2">&quot;El documento debe ser un numero de 8 digitos&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">nombre</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">apellido</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">curso</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">documento</span><span class="o">.</span><span class="n">get</span><span class="p">()]</span>
+    
+    <span class="c1">#validar el email</span>
+    <span class="n">patron_mail</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[A-Za-z0-9._-]+@[A-Za-z0-9]+\.[A-Za-z]{2,3}(\.[a-zA-Z]{0,2})?$&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patron_mail</span><span class="p">,</span> <span class="n">mail</span><span class="o">.</span><span class="n">get</span><span class="p">()):</span>                
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Debe ser un email valido&quot;</span><span class="p">)</span>
+        <span class="c1">#app.graf = False</span>
+        <span class="k">return</span> <span class="s2">&quot;Debe ser un email valido: (usuario@dominio.com)&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">nombre</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">apellido</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">curso</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">documento</span><span class="o">.</span><span class="n">get</span><span class="p">()]</span>
+   
+    <span class="c1"># Validar el nombre y el apellido: se permiten letras mayusculas, minusculas, con acento y ñ</span>
+    <span class="n">patron</span> <span class="o">=</span> <span class="s2">&quot;^[a-zA-ZáéíóúñÑ ]+$&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patron</span><span class="p">,</span> <span class="n">nombre</span><span class="o">.</span><span class="n">get</span><span class="p">())</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patron</span><span class="p">,</span> <span class="n">apellido</span><span class="o">.</span><span class="n">get</span><span class="p">())):</span>
+        <span class="k">return</span> <span class="s2">&quot;El nombre y el apellido solo debe contener letras: &quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">nombre</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">apellido</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">curso</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">documento</span><span class="o">.</span><span class="n">get</span><span class="p">()]</span>
+    <span class="k">if</span> <span class="n">curso</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;CURSO: Elija egb, cfi, superior, integracion o ex &quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">nombre</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">apellido</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">curso</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">documento</span><span class="o">.</span><span class="n">get</span><span class="p">()]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Not in values&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">edad</span> <span class="o">&lt;</span><span class="mi">5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;La edad debe ser mayor que 5 años&quot;</span><span class="p">,</span>  <span class="p">[</span><span class="n">nombre</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">apellido</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">curso</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">documento</span><span class="o">.</span><span class="n">get</span><span class="p">()]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Derechos de autor 2025, Claudio.</p>
+  </div>
+
+  Compilado con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
