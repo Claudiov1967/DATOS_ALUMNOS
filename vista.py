@@ -1,16 +1,15 @@
-from tkinter import Label, Entry, Button, ttk
+from tkinter import Label, Entry, Button, ttk, Frame, Tk, StringVar
 from PIL import ImageTk, Image
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from tkinter import Frame, Tk
 from tkcalendar import Calendar
 import tkinter as tk
-from tkinter import StringVar
 from tkinter.messagebox import showinfo, showwarning
 from datetime import datetime
 import random
 from modelo import Abmc
-from modelo import egb, cfi, superior, integracion, graf
+from modelo import egb, cfi, superior, integracion
+
 
 
 class Ventanita():
@@ -29,11 +28,10 @@ class Ventanita():
 
         # Titulo principal de la ventana         
         self.titulo = Label(self.root, text="SISTEMA DE GESTION DE DATOS E INGRESOS DE ALUMNOS",
-                    bg="green", fg="thistle1", height=1, width= 60,font=("Garamond", 14,"bold"))
+                        bg="green", fg="thistle1", height=1, width= 60,font=("Garamond", 14,"bold"))
         self.titulo.grid(row=0, column=0, columnspan=6, padx=1, pady=1, sticky='w')
 
-                ###################
-
+        ###################
         # GRAFICO
         # crear un frame dentro de la ventana
         self.frame = Frame(self.root, bg='green')
@@ -45,14 +43,12 @@ class Ventanita():
         # Crear un grafico de barras en el primer eje
         self.ax.bar(self.nombres, self.tamaño, color= self.colores)
         self.ax.set_title('ALUMNOS POR CURSO')
-        
         print("ax: ", self.ax)
 
         # Integrar la figura en tkinter
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.frame)
         self.canvas.draw()
         self.canvas.get_tk_widget().grid(column=4, row=1, rowspan=5, columnspan=2)
-
 
         #######################################
         # widgets con los nombres de los campos a conpletar por cada registro
@@ -81,6 +77,7 @@ class Ventanita():
         self.tel_val, 
         self.nac_val
         ) = (StringVar(), StringVar(), StringVar(), StringVar(), StringVar(), StringVar(), StringVar())
+
         w_ancho = 20
 
         entrada1 = Entry(self.root, textvariable = self.nombre_val, width = w_ancho,font=("Candara",12)) 
@@ -103,7 +100,6 @@ class Ventanita():
         entrada6.grid(row = 6, column = 1)
         entrada7 = Entry(self.root, textvariable = self.nac_val, width = w_ancho, font=("Candara",12)) 
         entrada7.grid(row = 7, column = 1)
-
 
         ################################################
         # calendario
@@ -164,34 +160,26 @@ class Ventanita():
         boton_consultar=Button(self.root, text="Consultar", command=self.show_consultar, font=("Candara",12), width=15)
         boton_consultar.grid(row=10, column=1)
 
-        boton_fecha = Button(
-            self.root,
-            text="ACEPTAR",
-            command=lambda: self.elegir_fecha(),
-            bg="black",
-            fg="white",
-            font=("Candara", 12),
-            width=15
-            )
-
+        boton_fecha = Button(self.root, text="ACEPTAR", command=lambda: self.elegir_fecha(), bg="black", fg="white", font=("Candara",12), width=15)
         boton_fecha.grid(row=10, column=2)
 
         boton_sorpresa = Button(self.root, text="SORPRESA", command=lambda:self.cambiar_colores(), bg="white",
                                 fg="black", font=("Candara",12), width=15)
         boton_sorpresa.grid(row=9, column=5)
 
-    
-    def show_alta(self,):
+
+    def show_alta(self,):  
         alumno = Abmc(
-            self.nombre_val.get(),
-            self.apellido_val.get(),
-            self.curso_val.get(),
-            self.documento_val.get(),
-            self.domicilio_val.get(),
-            self.tel_val.get(),
-            self.nac_val.get()
-            )
-        retorno,resultado = alumno.alta(app)
+        self.nombre_val.get(), 
+        self.apellido_val.get(), 
+        self.curso_val.get(), 
+        self.documento_val.get(), 
+        self.domicilio_val.get(), 
+        self.tel_val.get(), 
+        self.nac_val.get()
+        )
+  
+        retorno, resultado = alumno.alta(self)
         print(self.graf, self.tamaño)
         if self.graf:
             print("graf", self.graf)
@@ -206,14 +194,14 @@ class Ventanita():
             self.nac_val.set("")
             showinfo("INFORMACION", retorno)
         else:
-            showwarning("ADVERTENCIA",retorno)
+            showwarning("ADVERTENCIA",retorno )
 
     def show_consultar(self,):
         valor = self.tree.selection()
         if not valor:
             showwarning("ADVERTENCIA","Por favor seleccione una fila para consultar." )
         print("valor:",valor)   
-        item = self.tree.item(valor)   
+        item = self.tree.item(valor)  
         alumno = Abmc(
             self.nombre_val.get(),
             self.apellido_val.get(),
@@ -222,12 +210,11 @@ class Ventanita():
             self.domicilio_val.get(),
             self.tel_val.get(),
             self.nac_val.get()
-            )     
-        retorno = alumno.consultar(item, app)  
+            )      
+        retorno = alumno.consultar(item, self)  
         showinfo("INFORMACION", retorno)
-        
 
-    def actualizar_treeview(self, resultado):
+    def actualizar_treeview(self,resultado):
         records = self.tree.get_children()
         for element in records:
             self.tree.delete(element)
@@ -235,8 +222,8 @@ class Ventanita():
         for fila in resultado:
             print(fila)
             self.tree.insert("", 0, text=fila[0], values=(fila[1], fila[2], fila[3], fila[4], fila[5], fila[6], fila[7]))
-    
-    def actualizar_grafico(self,tamaño): 
+
+    def actualizar_grafico(self,tamaño):
         print("ax:",self.ax)
         print(self.tamaño)
         # Limpiar el gráfico actual
@@ -244,23 +231,16 @@ class Ventanita():
         self.ax.bar(self.nombres, tamaño, color=self.colores)
         # Redibujar el gráfico
         self.canvas.draw()
-
+    
     def elegir_fecha(self,):
         self.nac_val.set("")
         print("El dia elegido es: " + self.calendario.get_date())
         fecha = self.calendario.get_date()
         fecha_obj = datetime.strptime(fecha, "%m/%d/%y")
-        print(fecha_obj)
         fecha_formateada = fecha_obj.strftime("%d/%m/%y")
-        print(fecha_formateada)
         self.nac_val.set(fecha_formateada)
-
+    
     def show_borrar(self,):
-        valor = self.tree.selection()
-        if not valor:
-             showwarning("ADVERTENCIA","Por favor seleccione una fila para consultar." )
-        print("valor:",valor)   
-        item = self.tree.item(valor)
         alumno = Abmc(
             self.nombre_val.get(),
             self.apellido_val.get(),
@@ -269,9 +249,8 @@ class Ventanita():
             self.domicilio_val.get(),
             self.tel_val.get(),
             self.nac_val.get()
-            ) 
-        self.tree.delete(valor)
-        retorno, resultado = alumno.borrar(item, app)
+            )
+        retorno, resultado = alumno.borrar(self.tree, self)
         print(self.graf, self.tamaño)
         if self.graf:
             self.actualizar_grafico(self.tamaño)
@@ -294,8 +273,8 @@ class Ventanita():
             self.domicilio_val.get(),
             self.tel_val.get(),
             self.nac_val.get()
-            )    
-        retorno, resultado = alumno.modificar(item,app)  
+            )
+        retorno, resultado = alumno.modificar(item, self)  
         if self.graf:       
             self.actualizar_grafico(self.tamaño)
             self.actualizar_treeview(resultado)
@@ -327,7 +306,7 @@ class Ventanita():
                 'salmon2', 'salmon3', 'salmon4', 'LightSalmon2', 'LightSalmon3', 'LightSalmon4', 'orange2', 'DarkOrange1',
                 'DarkOrange2','coral1', 'tomato2', 'OrangeRed2']
         color = random.choice(colores)
-        self.root.configure(background=color) 
+        self.root.configure(background=color)  
 
     def actualizar(self,):
         alumno = Abmc(
@@ -339,20 +318,9 @@ class Ventanita():
             self.tel_val.get(),
             self.nac_val.get()
             )
-        resultado = alumno.alumnos_cursos(app)
+        resultado= alumno.alumnos_cursos(self)
         self.actualizar_treeview(resultado)
         self.actualizar_grafico(self.tamaño)
         print(self.graf)
+        
 
-if __name__ == "__main__":
-    window = Tk()
-    nombres = ['EGB', 'CFI', 'SUP', 'INTEG']
-    colores = ['blue', 'red', 'green', 'yellow']
-    tamaño = [egb, cfi, superior, integracion]
-    app = Ventanita(window, nombres, colores, tamaño)
-    try:
-        app.actualizar()
-    except:
-        print("FALLO DE TK")
-
-    window.mainloop()
