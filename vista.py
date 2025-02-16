@@ -1,476 +1,282 @@
-from tkinter import *
-from tkinter.messagebox import *
-import sqlite3
-from tkinter import ttk
+from tkinter import Label, Entry, Button, ttk
 from PIL import ImageTk, Image
-import tkinter as tk
-from tkcalendar import *
-import random
-import re
-from tkinter import ttk, messagebox
-from tkinter import Tk, Frame
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import babel.numbers
+from tkinter import Frame, Tk
+from tkcalendar import Calendar
+import tkinter as tk
+from tkinter import StringVar
+from tkinter.messagebox import showinfo, showwarning
+from datetime import datetime
+import random
+from modelo import alta, borrar ,modificar, consultar
+from modelo import alumnos_cursos
+from modelo import egb, cfi, superior, integracion, graf
 
+#SOLO IMPLEMENTA CLASE EN VISTA
+"""VISTA_MVC TIENE SEPARACION MVC. NO SE PASA TREE A MODELO, SOLO ITEM 
+EL MODELO NO TIENE UNA CLASE ABMC"""
 
-# ##############################################
-# MODELO
-# ##############################################
+class Ventanita():
 
-# conexion con base de datos y creamos la tabla si no fue creada
+    def __init__(self, window):
+        self.root = window
 
-# variables para hacer el grafico de barras con maptolib
-global egb, cfi, superior, integracion 
-egb, cfi, superior, integracion = 0, 0, 0, 0
-
-def conexion():
-    con = sqlite3.connect("escuela.db")
-    return con
-
-def crear_tabla():
-    con = conexion()
-    cursor = con.cursor()
-    sql = """CREATE TABLE IF NOT EXISTS alumnos
-             (id INTEGER PRIMARY KEY AUTOINCREMENT,
-             nombre text, apellido text,dni text, curso text, domicilio text, telefono text, f_nac text)
-    """
-    cursor.execute(sql)
-    con.commit()
-
-# funcion que inserta una ventana solicitando la conformidad para ALT, BAJA Y MODIFICACION
-def conformidad(accion):
-    if askyesno('CONFORMIDAD',
-    accion):
-        showinfo('Si', 'SE REALIZA LA ACCION')
-        return "si"
-    else:
-        showinfo('No', 'ESTA A PUNTO DE SALIR')
-        return "no"
-
-# funcion para limpiar los entries y la barra inferior 
-def limpiar():
-            
-            nombre_val.set("")
-            apellido_val.set("")
-            dni_val.set("")
-            curso_val.set("")
-            domicilio_val.set("")
-            tel_val.set("")
-            nac_val.set("")
-            Label(ventana, text="                                                                                               " , font=("Agency FB", 19)).place(x=40,y=50)
-
-conexion()
-crear_tabla()
-
-def actualizar_grafico():
-    # Limpiar el gráfico actual
-    ax.clear()
+        # Datos para el grafico
+        #egb, cfi, superior, integracion= 1,2,3,4
+        self.nombres = ['EGB', 'CFI', 'SUP', 'INTEG']
+        self.colores = ['blue', 'red', 'green', 'yellow']
+        self.tamaño = [egb, cfi, superior, integracion]
     
-    tamaño = [egb, cfi, superior, integracion]
-    ax.bar(nombres, tamaño, color=colores)
-    
-    # Redibujar el gráfico
-    canvas.draw()
+        self.root.title("SISTEMA DE GESTION DE DATOS")
 
-# alta de datos en SQL3
-def alta(nombre, apellido, dni , curso, domicilio, telefono ,nacimiento, tree):
+        # color fondo de la grilla de la ventana root
+        self.root.configure(bg="#2F4F4F", padx=20, pady=20)
+        # Titulo principal de la ventana         
+        self.titulo = Label(self.root, text="SISTEMA DE GESTION DE DATOS E INGRESOS DE ALUMNOS",
+                    bg="green", fg="thistle1", height=1, width= 60,font=("Garamond", 14,"bold"))
+        self.titulo.grid(row=0, column=0, columnspan=6, padx=1, pady=1, sticky='w')
 
-    # controla que en todos los entries se hayan ingresado datos
-    if (nombre=="" or apellido=="" or dni=="" or curso=="" or domicilio=="" or nacimiento==""):
-        messagebox.showwarning("Advertencia", "Por favor debe llenar todos los entries.")
-        return
-    
-    # Expresión regular para exactamente 10 dígitos para telefono
-    # Validar si la cadena coincide con el patrón
-    patron_num = "^([0-9]{10})$"
-    if re.match(patron_num, telefono):
-        print("Validado")
-    else:
-        print("Debe ser un numero de 10 digitos")
-        Label(ventana, text="El telefono debe ser un numero de 10 digitos" , font=("Agency FB", 19)).place(x=40,y=50)
-        return
-    
-    # Expresión regular para exactamente 8 digitos para DNI
-    # Validar si la cadena coincide con el patrón
-    patron_num = "^([0-9]{8})$"
-    if re.match(patron_num, dni):
-        print("Validado")
-    else:
-        print("Debe ser un numero de 10 digitos")
-        Label(ventana, text="El dni debe ser un numero de 8 digitos" , font=("Agency FB", 19)).place(x=40,y=50)
-        return
-    
-    # Validar si la cadena coincide con el patrón: letras mayusculas, minusculas, con acento y ñ
-    patron = "^[a-zA-ZáéíóúñÑ ]+$"
-    if(re.match(patron, nombre) and re.match(patron, apellido)):
-        Label(ventana, text="Nombre válido: "+nombre+ " "+apellido , font=("Agency FB", 19)).place(x=40,y=50)
-                
-        if conformidad("DESEA DAR DE ALTA UN REGISTRO?")=="no":
-            limpiar()
-            return # si no desea dar de alta limpia los entries y vuelve
-        else:    
-            # carga un nuevo registro
-            telefono= int(telefono)
-            print(type(telefono), "telefono")        
+                ###################
 
-            print(nombre, apellido, dni, curso, domicilio, telefono, nacimiento)
-            con=conexion()
-            cursor=con.cursor()
-            data=(nombre, apellido, dni, curso, domicilio, telefono, nacimiento)
-            print(type(data), data)
-                
-            sql="INSERT INTO alumnos(nombre, apellido, dni, curso, domicilio, telefono, f_nac) VALUES(?, ?, ?, ?, ?, ?,?)"
-            cursor.execute(sql, data)
-            con.commit()
-            print("Estoy en alta todo ok")
-            actualizar_treeview(tree)
+        # GRAFICO
+        # crear un frame dentro de la ventana
+        self.frame = Frame(self.root, bg='green')
+        self.frame.grid(column=4, row=1, rowspan=5)
 
-            # Limpiar los campos de entrada
-            limpiar()       
-    
-    # si se ingreso por error un caracter no valido con el nombre o apellido
-    else:
-        Label(ventana, text= nombre+ " "+apellido+ ": solo debe contener letras", font=("Agency FB", 19)).place(x=40,y=50)
+        # Crear la figura y los ejes
+        self.fig, self.ax = plt.subplots(dpi=80, figsize=(4, 2), facecolor="green")
+
+        # Crear un grafico de barras en el primer eje
+        self.ax.bar(self.nombres, self.tamaño, color= self.colores)
+        self.ax.set_title('ALUMNOS POR CURSO')
         
+        print("ax: ", self.ax)
 
-# borra un registro de la base de datos al seleccionarlo
+        # Integrar la figura en tkinter
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.frame)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().grid(column=4, row=1, rowspan=5, columnspan=2)
 
-def borrar(tree):
-    valor = tree.selection()
-    if not valor:
-        messagebox.showwarning("Advertencia", "Por favor seleccione una fila para eliminar.")
-        return
-    if conformidad("Desea dar de baja?")=="no":
-        limpiar()
-        return
-    else:
-        print("valor:",valor)   
-        item = tree.item(valor)
-        print("item:",item)     
-        print(item['text'])
-        print("values",item['values'])
-        mi_id = item['text']
+        #######################################
+        # widgets con los nombres de los campos a conpletar por cada registro
+        self.nombre = Label(self.root, text="Nombre/s", font=("Candara",12), width=15)
+        self.nombre.grid(row=1, column=0, sticky='w')
+        self.apellido=Label(self.root, text="Apellido/s", font=("Candara",12),width=15)
+        self.apellido.grid(row=2, column=0, sticky='w')
+        self.curso=Label(self.root, text="Curso      ", font=("Candara",12),width=15)
+        self.curso.grid(row=3, column=0, sticky='w')
+        self.documento=Label(self.root, text="Documento", font=("Candara",12), width=15)
+        self.documento.grid(row=4, column=0, sticky='w')
+        self.domicilio=Label(self.root, text="Domicilio", font=("Candara",12), width=15)
+        self.domicilio.grid(row=5, column=0, sticky='w')
+        self.telefono=Label(self.root, text="Telefono", font=("Candara",12), width=15)
+        self.telefono.grid(row=6, column=0, sticky='w')
+        self.nacimiento= Label(self.root, text="F. Nac.", font=("Candara",12), width=15)
+        self.nacimiento.grid(row=7, column=0, sticky='w')
 
-        con=conexion()
-        cursor=con.cursor()
-        data = (mi_id,)
-        sql = "DELETE FROM alumnos WHERE id = ?;"
-        cursor.execute(sql, data)
-        con.commit()
-        tree.delete(valor)
+        # Variables campos de Entrada
+        self.nombre_val, self.apellido_val, self.curso_val, self.documento_val, self.domicilio_val, self.tel_val, self.nac_val = StringVar(),StringVar(), StringVar(), StringVar(), StringVar(), StringVar(), StringVar()
+        w_ancho = 20
 
-def modificar(nombre, apellido, dni, curso, domicilio, telefono, nacimiento, tree):
-    valor = tree.selection()
-    # si no se selecciona un registro para modificar informa error
-    if not valor:
-        messagebox.showwarning("Advertencia", "Por favor seleccione una fila para modificar.")
-        return
-    
-    # controla que en todos los entries se hayan ingresado datos
-    if (nombre=="" or apellido=="" or dni=="" or curso=="" or domicilio=="" or nacimiento==""):
-        messagebox.showwarning("Advertencia", "Por favor debe llenar todos los entries.")
-        return
-    
-    # Expresión regular para exactamente 10 dígitos para telefono
-    # Validar si la cadena coincide con el patrón
-    patron_num = "^([0-9]{10})$"
-    if re.match(patron_num, telefono):
-        print("Validado")
-    else:
-        print("Debe ser un numero de 10 digitos")
-        Label(ventana, text="El telefono debe ser un numero de 10 digitos" , font=("Agency FB", 19)).place(x=40,y=50)
-        return
-    
-    # Expresión regular para exactamente 8 digitos para DNI
-    # Validar si la cadena coincide con el patrón
-    patron_num = "^([0-9]{8})$"
-    if re.match(patron_num, dni):
-        print("Validado")
-    else:
-        print("Debe ser un numero de 10 digitos")
-        Label(ventana, text="El dni debe ser un numero de 8 digitos" , font=("Agency FB", 19)).place(x=40,y=50)
-        return
-        
-    
-    # Validar si la cadena coincide con el patrón: letras mayusculas, minusculas, con acento y ñ
-    patron = "^[a-zA-ZáéíóúñÑ ]+$"
-    if(re.match(patron, nombre) and re.match(patron, apellido)):
-        Label(ventana, text="Nombre válido: "+nombre+ " "+apellido , font=("Agency FB", 19)).place(x=40,y=50)
+        entrada1 = Entry(self.root, textvariable = self.nombre_val, width = w_ancho,font=("Candara",12)) 
+        entrada1.grid(row = 1, column = 1)
+        entrada2 = Entry(self.root, textvariable = self.apellido_val, width = w_ancho, font=("Candara",12)) 
+        entrada2.grid(row = 2, column = 1)
+        entrada3 = ttk.Combobox(self.root, textvariable = self.curso_val, width = w_ancho, font=("Candara",12)) 
+        entrada3.grid(row = 3, column = 1)
+        entrada3['values'] = ('egb',  
+                                'cfi', 
+                                'superior', 
+                                'integracion', 
+                                'ex'
+                                ) 
+        entrada4 = Entry(self.root, textvariable = self.documento_val, width = w_ancho, font=("Candara",12)) 
+        entrada4.grid(row = 4, column = 1)
+        entrada5 = Entry(self.root, textvariable = self.domicilio_val, width = w_ancho, font=("Candara",12)) 
+        entrada5.grid(row = 5, column = 1)
+        entrada6 = Entry(self.root, textvariable = self.tel_val, width = w_ancho, font=("Candara",12)) 
+        entrada6.grid(row = 6, column = 1)
+        entrada7 = Entry(self.root, textvariable = self.nac_val, width = w_ancho, font=("Candara",12)) 
+        entrada7.grid(row = 7, column = 1)
 
-        if conformidad("DESEA MODIFICAR EL REGISTRO?")=="no":
-            limpiar()
-            return
+
+        ################################################
+        # calendario
+        self.calendario = Calendar(self.root, selectmode="day", background="green",selectbackground="black", normalbackground="#00ff40",
+                                weekendbackground="#00ff40", othermonthbackground="#008040", othermonthwebackground="#008040", )
+        self.calendario.grid(row=1, column=2, rowspan=6)
+        ################################################
+        ###############################################
+        # IMAGEN:logo (DEBE ESTAR EN LA MISMA CARPETA)
+        ##############################################
+        image1 = Image.open("logo.png")
+        image1 = image1.resize((100, 100))
+        self.image1 = ImageTk.PhotoImage(image1)
+        self.label1 = tk.Label(image=self.image1)
+        self.label1.grid(row=1, column=5, rowspan=4)
+
+        ##################################################
+        # TREEVIEW
+        ##################################################
+
+        self.tree = ttk.Treeview(self.root)
+        # STYLE TREEVIEW
+        self.style = ttk.Style()
+        self.style.theme_use("alt")
+
+        self.tree["columns"]=("col1", "col2", "col3", "col4", "col5", "col6", "col7")
+        self.tree.column("#0", width=90, minwidth=50)
+        self.tree.column("col1", width=200, minwidth=80)
+        self.tree.column("col2", width=200, minwidth=80)
+        self.tree.column("col3", width=200, minwidth=80)
+        self.tree.column("col4", width=200, minwidth=80)
+        self.tree.column("col5", width=200, minwidth=80)
+        self.tree.column("col6", width=200, minwidth=80)
+        self.tree.column("col7", width=200, minwidth=80)
+        self.tree.heading("#0", text="ID")
+        self.tree.heading("col1", text="NOMBRE")
+        self.tree.heading("col2", text="APELLIDO")
+        self.tree.heading("col3", text="CURSO")
+        self.tree.heading("col4", text="DOCUMENTO")
+        self.tree.heading("col5", text="DOMICILIO")
+        self.tree.heading("col6", text="TELEFONO")
+        self.tree.heading("col7", text="F. NACIMIENTO")
+        self.tree.grid(row=13, column=0, columnspan=6)
+
+        ##################################
+        # BOTONES DE CONTROL
+        ##################################
+
+        boton_alta=Button(self.root, text="Alta", command=self.show_alta, font=("Candara",12), width=15)
+        boton_alta.grid(row=10, column=0)
+
+        boton_borrar=Button(self.root, text="Borrar", command=self.show_borrar, font=("Candara",12), width=15)
+        boton_borrar.grid(row=11, column=0)
+
+        boton_modificar=Button(self.root, text="Modificar", command=self.show_modificar, font=("Candara",12), width=15)
+        boton_modificar.grid(row=11, column=1)
+
+        boton_consultar=Button(self.root, text="Consultar", command=self.show_consultar, font=("Candara",12), width=15)
+        boton_consultar.grid(row=10, column=1)
+
+        boton_fecha = Button(self.root, text="ACEPTAR", command=lambda: self.elegir_fecha(), bg="black", fg="white", font=("Candara",12), width=15)
+        boton_fecha.grid(row=10, column=2)
+
+        boton_sorpresa = Button(self.root, text="SORPRESA", command=lambda:self.cambiar_colores(), bg="white",
+                                fg="black", font=("Candara",12), width=15)
+        boton_sorpresa.grid(row=9, column=5)
+
+
     
+    def show_alta(self,):
+        graf, tamaño,retorno, resultado = alta(self.nombre_val, self.apellido_val, self.curso_val, self.documento_val, self.domicilio_val, self.tel_val, self.nac_val)
+        print(graf, tamaño)
+        if graf == True:
+            print("graf", graf)
+            self.actualizar_treeview(resultado)
+            self.actualizar_grafico(tamaño)
+            showinfo("INFORMACION", retorno)
         else:
-            telefono=int(telefono)
-            print(type(telefono), "telefono") 
-            print("valor:",valor)   
-            item = tree.item(valor)
-            print("item:",item)     
-            print(item['text'])
-            con=conexion()
-            cursor = con.cursor()
-            mi_id = int(item['text'])
-            data = (nombre, apellido, dni, curso, domicilio, telefono, nacimiento, mi_id)
-            print(data)
-            sql = "UPDATE alumnos SET nombre=?, apellido=?, dni=?, curso=?, domicilio=?, telefono=?, f_nac=? WHERE id=?;"
-            cursor.execute(sql, data)
-            con.commit()
+            showwarning("ADVERTENCIA",retorno)
 
-            # Limpiar los campos de entrada
-            limpiar()
-            actualizar_treeview(tree)
+    def show_consultar(self,):
+        valor = self.tree.selection()
+        if not valor:
+            showwarning("ADVERTENCIA","Por favor seleccione una fila para consultar." )
+        print("valor:",valor)   
+        item = self.tree.item(valor)        
+        retorno = consultar(self.nombre_val, self.apellido_val, self.curso_val, self.documento_val, self.domicilio_val, self.tel_val, self.nac_val, item)  
+        showinfo("INFORMACION", retorno)
+
+    def actualizar_treeview(self, resultado):
+        records = self.tree.get_children()
+        for element in records:
+            self.tree.delete(element)
+        
+        for fila in resultado:
+            print(fila)
+            self.tree.insert("", 0, text=fila[0], values=(fila[1], fila[2], fila[3], fila[4], fila[5], fila[6], fila[7]))
     
-    # si se ingreso por error un caracter no valido con el nombre o apellido
-    else:
-        Label(ventana, text= nombre+ " "+apellido+ ": solo debe contener letras", font=("Agency FB", 19)).place(x=40,y=50)
+    def actualizar_grafico(self,tamaño): 
+        print("ax:",self.ax)
+        print(tamaño)
+        # Limpiar el gráfico actual
+        self.ax.clear()
+        self.ax.bar(self.nombres, tamaño, color=self.colores)
+        # Redibujar el gráfico
+        self.canvas.draw()
 
-def consultar(tree):
-    valor = tree.selection()
-    if not valor:
-        messagebox.showwarning("Advertencia", "Por favor seleccione una fila para consultar.")
-        return
-    print("valor:",valor)   
-    item = tree.item(valor)
-    print("item:",item)     
-    print(item['text'])
-    con=conexion()
-    cursor = con.cursor()
-    mi_id = int(item['text'])
-    entrada1.delete(0, 'end')
-    entrada1.insert(0, item['values'][0])
-    entrada2.delete(0, 'end')
-    entrada2.insert(0, item['values'][1])
-    entrada3.delete(0, 'end')
-    entrada3.insert(0, item['values'][2])
-    entrada4.delete(0, 'end')
-    entrada4.insert(0, item['values'][3])
-    entrada5.delete(0, 'end')
-    entrada5.insert(0, item['values'][4])
-    entrada6.delete(0, 'end')
-    entrada6.insert(0, item['values'][5])
-    entrada7.delete(0, 'end')
-    entrada7.insert(0, item['values'][5])
-    Label(ventana, text="                                                        ", font=("Agency FB", 19)).place(x=40,y=50)
-   
-def cambiar_colores():
-    colores= ['snow', 'old lace', 'linen', 'antique white', 'papaya whip', 'blanched almond', 'bisque',
-              'peach puff', 'alice blue','navajo white', 'lavender', 'misty rose', 'dark slate gray',
-               'dim gray', 'light slate gray', 'gray', 'light gray', 'midnight blue', 'navy',
-               'cornflower blue', 'dark slate blue', 'medium slate blue', 'light slate blue', 'medium blue',
-               'royal blue', 'blue', 'deep sky blue', 'sky blue', 'light sky blue', 'steel blue', 'light steel blue',
-               'powder blue', 'pale turquoise', 'dark turquoise', 'medium turquoise', 'turquoise','cyan',
-               'light cyan', 'cadet blue', 'medium aquamarine', 'aquamarine', 'dark green', 'dark olive green',
-               'dark sea green', 'sea green', 'medium sea green', 'light sea green', 'pale green', 'spring green',
-               'lawn green', 'RosyBrown1','IndianRed3', 'burlywood2', 'tan2', 'tan4', 'firebrick3', 'medium spring green',
-               'green yellow', 'lime green', 'yellow green', 'RosyBrown2', 'indianRed4', 'burlywood3', 'chocolate1',
-               'firebrick4', 'RosyBrown3', 'siennal', 'burlywood4', 'chocolate2', 'RosyBrown4', 'IndianRed1',
-               'IndianRed2', 'sienna2', 'sienna3', 'sienna4', 'burlywood1', 'wheat1', 'wheat2', 'wheat3', 'wheat4',
-               'tan1', 'chocolate3', 'firebrick1', 'firebrick2', 'brown1', 'brown2', 'brown3', 'brown4', 'salmon1',
-               'salmon2', 'salmon3', 'salmon4', 'LightSalmon2', 'LightSalmon3', 'LightSalmon4', 'orange2', 'DarkOrange1',
-               'DarkOrange2','coral1', 'tomato2', 'OrangeRed2']
-    color = random.choice(colores)
-    root.configure(background=color)   
-    
+    def elegir_fecha(self,):
+        self.nac_val.set("")
+        print("El dia elegido es: " + self.calendario.get_date())
+        fecha = self.calendario.get_date()
+        fecha_obj = datetime.strptime(fecha, "%m/%d/%y")
+        fecha_formateada = fecha_obj.strftime("%d/%m/%y")
+        self.nac_val.set(fecha_formateada)
 
-# actualiza el treview al comenzar para llenarlo con los valores de la tabla
-def actualizar_treeview(mitreview):
-    global egb, cfi, superior, integracion 
-    egb, cfi, superior, integracion = 0, 0, 0, 0
+    def show_borrar(self,):
+        valor = self.tree.selection()
+        if not valor:
+             showwarning("ADVERTENCIA","Por favor seleccione una fila para consultar." )
+        print("valor:",valor)   
+        item = self.tree.item(valor)
+        self.tree.delete(valor)
+        graf, tamaño, retorno, resultado = borrar(item)
+        print(graf, tamaño)
+        if graf:
+            #actualizar_grafico(tamaño)
+            self.actualizar_treeview(resultado)
+        showinfo("INFORMACION", retorno)
 
-    records = mitreview.get_children()
-    for element in records:
-        mitreview.delete(element)
+    def show_modificar(self,):
+        valor = self.tree.selection()
+        # si no se selecciona un registro para modificar informa error
+        if not valor:
+            showwarning("ADVERTENCIA","Por favor seleccione una fila para consultar." )
+            exit
+        print("valor:",valor)   
+        item = self.tree.item(valor)
+            
+        graf, tamaño, retorno, resultado = modificar(self.nombre_val, self.apellido_val, self.curso_val, self.documento_val, self.domicilio_val, self.tel_val, self.nac_val, item)  
+        if graf:       
+            self.actualizar_grafico(tamaño)
+            self.actualizar_treeview(resultado)
+            showinfo("INFORMACION", retorno)
+        else:
+            showwarning("ADVERTENCIA",retorno )
 
-    sql = "SELECT * FROM alumnos ORDER BY id ASC"
-    con=conexion()
-    cursor=con.cursor()
-    datos=cursor.execute(sql)
+    def cambiar_colores(self,):
+        colores= ['snow', 'old lace', 'linen', 'antique white', 'papaya whip', 'blanched almond', 'bisque',
+                'peach puff', 'alice blue','navajo white', 'lavender', 'misty rose', 'dark slate gray',
+                'dim gray', 'light slate gray', 'gray', 'light gray', 'midnight blue', 'navy',
+                'cornflower blue', 'dark slate blue', 'medium slate blue', 'light slate blue', 'medium blue',
+                'royal blue', 'blue', 'deep sky blue', 'sky blue', 'light sky blue', 'steel blue', 'light steel blue',
+                'powder blue', 'pale turquoise', 'dark turquoise', 'medium turquoise', 'turquoise','cyan',
+                'light cyan', 'cadet blue', 'medium aquamarine', 'aquamarine', 'dark green', 'dark olive green',
+                'dark sea green', 'sea green', 'medium sea green', 'light sea green', 'pale green', 'spring green',
+                'lawn green', 'RosyBrown1','IndianRed3', 'burlywood2', 'tan2', 'tan4', 'firebrick3', 'medium spring green',
+                'green yellow', 'lime green', 'yellow green', 'RosyBrown2', 'indianRed4', 'burlywood3', 'chocolate1',
+                'firebrick4', 'RosyBrown3', 'siennal', 'burlywood4', 'chocolate2', 'RosyBrown4', 'IndianRed1',
+                'IndianRed2', 'sienna2', 'sienna3', 'sienna4', 'burlywood1', 'wheat1', 'wheat2', 'wheat3', 'wheat4',
+                'tan1', 'chocolate3', 'firebrick1', 'firebrick2', 'brown1', 'brown2', 'brown3', 'brown4', 'salmon1',
+                'salmon2', 'salmon3', 'salmon4', 'LightSalmon2', 'LightSalmon3', 'LightSalmon4', 'orange2', 'DarkOrange1',
+                'DarkOrange2','coral1', 'tomato2', 'OrangeRed2']
+        color = random.choice(colores)
+        self.root.configure(background=color) 
 
-    resultado = datos.fetchall()
-       
+    def actualizar(self,):
+        graf, tamaño , resultado= alumnos_cursos()
+        self.actualizar_treeview(resultado)
+        self.actualizar_grafico(tamaño)
+        print(graf)
 
-    for fila in resultado:
-        print(fila)
-        mitreview.insert("", 0, text=fila[0], values=(fila[1], fila[2], fila[3], fila[4], fila[5], fila[6], fila[7]))
-        if (fila[4])=="egb":
-            egb += 1
-        if (fila[4])=="cfi":
-            cfi += 1
-        if (fila[4])=="superior":
-            superior += 1
-        if (fila[4])=="integracion":
-            integracion += 1
-        print("egb: ", egb, "cfi", cfi, "superior", superior, "integracion", integracion)
-    # Actualizar el gráfico después de actualizar el TreeView
-    actualizar_grafico()
+if __name__ == "__main__":
+    window = Tk()
+    app = Ventanita(window)
+    try:
+        app.actualizar()
+    except:
+        print("FALLO DE TK")
 
-# esta funcion borra dd/mm/yy del entry
-# y coloca la fecha elegida
-# ademans la imprime en consola
-
-def elegir_fecha():
-    entrada7.delete(0, END)
-    print("El dia elegido es: " + calendario.get_date())
-    nac_val= calendario.get_date()
-    entrada7.insert(0, calendario.get_date())
-
-
-# ##############################################
-# VISTA
-# ##############################################
-
-root = Tk()
-root.title("SISTEMA DE GESTION DE DATOS")
-
-# color fondo de la grilla de la ventana root
-root.configure(bg="#2F4F4F", padx=20, pady=20)
-
-# calendario y ventana
-# de calendario se necesita calendario.get_date() en la otra funcion
-
-# Titulo principal de la ventana         
-titulo = Label(root, text="SISTEMA DE GESTION DE DATOS E INGRESOS DE ALUMNOS", bg="green", fg="thistle1", height=1, width=60,font=("Garamond",14,"bold"))
-titulo.grid(row=0, column=0, columnspan=6, padx=1, pady=1, sticky=W+E)
-
-###################
-
-# crear un frame dentro de la ventana
-frame = Frame(root, bg='green')
-frame.grid(column=4, row=1, rowspan=5)
-
-# Datos para el grafico
-nombres = ['EGB', 'CFI', 'SUP', 'INTEG']
-colores = ['blue', 'red', 'green', 'yellow']
-tamaño = [egb, cfi, superior, integracion]
-
-# Crear la figura y los ejes
-fig, ax = plt.subplots(dpi=80, figsize=(4, 2), facecolor="green")
-
-# Titulo de la figura
-fig.suptitle('ALUMNOS POR CURSO')
-
-# Crear un grafico de barras en el primer eje
-ax.bar(nombres, tamaño, color= colores)
-
-# Integrar la figura en tkinter
-canvas = FigureCanvasTkAgg(fig, master=frame)
-canvas.draw()
-canvas.get_tk_widget().grid(column=4, row=1, rowspan=5, columnspan=2)
-
-
-# widgets con los nombres de los campos a conpletar por cada registro
-nombre = Label(root, text="Nombre/s", font=("Candara",12), width=15)
-nombre.grid(row=1, column=0, sticky=W)
-apellido=Label(root, text="Apellido/s", font=("Candara",12),width=15)
-apellido.grid(row=2, column=0, sticky=W)
-dni=Label(root, text="D.N.I:      ", font=("Candara",12),width=15)
-dni.grid(row=3, column=0, sticky=W)
-curso=Label(root, text="Curso      ", font=("Candara",12),width=15)
-curso.grid(row=4, column=0, sticky=W)
-domicilio=Label(root, text="Domicilio", font=("Candara",12), width=15)
-domicilio.grid(row=5, column=0, sticky=W)
-telefono=Label(root, text="Telefono", font=("Candara",12), width=15)
-telefono.grid(row=6, column=0, sticky=W)
-nacimiento= Label(root, text="F. Nac.", font=("Candara",12), width=15)
-nacimiento.grid(row=7, column=0, sticky=W)
-
-
-# Variables campos de Entrada
-nombre_val, apellido_val, dni_val, curso_val, domicilio_val, tel_val, nac_val = StringVar(), StringVar(), StringVar(), StringVar(), StringVar(), StringVar(), StringVar()
-w_ancho = 20
-
-entrada1 = Entry(root, textvariable = nombre_val, width = w_ancho,font=("Candara",12)) 
-entrada1.grid(row = 1, column = 1)
-entrada2 = Entry(root, textvariable = apellido_val, width = w_ancho, font=("Candara",12)) 
-entrada2.grid(row = 2, column = 1)
-entrada3 = Entry(root, textvariable = dni_val, width = w_ancho, font=("Candara",12)) 
-entrada3.grid(row = 3, column = 1)
-entrada4 = ttk.Combobox(root, textvariable = curso_val, width = w_ancho, font=("Candara",12)) 
-entrada4.grid(row = 4, column = 1)
-entrada4['values'] = ('egb',  
-                          'cfi', 
-                          'superior', 
-                          'integracion',
-                          'ex' 
-                          ) 
-entrada5 = Entry(root, textvariable = domicilio_val, width = w_ancho, font=("Candara",12)) 
-entrada5.grid(row = 5, column = 1)
-entrada6 = Entry(root, textvariable = tel_val, width = w_ancho, font=("Candara",12)) 
-entrada6.grid(row = 6, column = 1)
-tel_val.set("")
-entrada7 = Entry(root, textvariable = nac_val, width = w_ancho, font=("Candara",12)) 
-entrada7.grid(row = 7, column = 1)
-nac_val.set("")
-
-################################################
-# calendario
-calendario = Calendar(root, selectmode="day", background="green",selectbackground="black", normalbackground="#00ff40",
-                         weekendbackground="#00ff40", othermonthbackground="#008040", othermonthwebackground="#008040", )
-calendario.grid(row=1, column=2, rowspan=6)
-################################################
-###############################################
-# IMAGEN:logo (DEBE ESTAR EN LA MISMA CARPETA)
-##############################################
-image1 = Image.open("logo.png")
-image1 = image1.resize((100, 100))
-image1 = ImageTk.PhotoImage(image1)
-label1 = tk.Label(image=image1)
-label1.grid(row=1, column=5, rowspan=4)
-
-##################################################
-# TREEVIEW
-##################################################
-
-tree = ttk.Treeview(root)
-# STYLE TREEVIEW
-style = ttk.Style()
-style.theme_use("alt")
-
-tree["columns"]=("col1", "col2", "col3", "col4", "col5", "col6", "col7")
-tree.column("#0", width=90, minwidth=50)
-tree.column("col1", width=200, minwidth=80)
-tree.column("col2", width=200, minwidth=80)
-tree.column("col3", width=200, minwidth=80)
-tree.column("col4", width=200, minwidth=80)
-tree.column("col5", width=200, minwidth=80)
-tree.column("col6", width=200, minwidth=80)
-tree.column("col7", width=200, minwidth=80)
-tree.heading("#0", text="ID")
-tree.heading("col1", text="NOMBRE")
-tree.heading("col2", text="APELLIDO")
-tree.heading("col3", text="DNI")
-tree.heading("col4", text="CURSO")
-tree.heading("col5", text="DOMICILIO")
-tree.heading("col6", text="TELEFONO")
-tree.heading("col7", text="F. NACIMIENTO")
-tree.grid(row=13, column=0, columnspan=6)
-
-ventana = Frame(root, bg="#FF7F50", height= 122, borderwidth=2, relief=RAISED)
-ventana.grid(row=14, column=0, columnspan=6, padx=1, pady=1, sticky=W+E)
-
-actualizar_treeview(tree)
-##################################
-# BOTONES DE CONTROL
-##################################
-
-boton_alta=Button(root, text="Alta", command=lambda:alta(nombre_val.get(), apellido_val.get(),dni_val.get(), curso_val.get(),domicilio_val.get(), tel_val.get(),nac_val.get(), tree), font=("Candara",12), width=15)
-boton_alta.grid(row=10, column=0)
-
-boton_borrar=Button(root, text="Borrar", command=lambda:borrar(tree), font=("Candara",12), width=15)
-boton_borrar.grid(row=11, column=0)
-
-boton_modificar=Button(root, text="Modificar", command=lambda:modificar(nombre_val.get(), apellido_val.get(),dni_val.get(), curso_val.get(),domicilio_val.get(), tel_val.get(),nac_val.get(), tree), font=("Candara",12), width=15)
-boton_modificar.grid(row=11, column=1)
-
-boton_consultar=Button(root, text="Consultar", command=lambda:consultar(tree), font=("Candara",12), width=15)
-boton_consultar.grid(row=10, column=1)
-
-boton_fecha = Button(root, text="ACEPTAR", command=elegir_fecha, bg="black", fg="white", font=("Candara",12), width=15)
-boton_fecha.grid(row=10, column=2)
-
-boton_sorpresa = Button(root, text="SORPRESA", command=cambiar_colores, bg="white", fg="black", font=("Candara",12), width=15)
-boton_sorpresa.grid(row=9, column=5)
-
-root.mainloop()
+    window.mainloop()
