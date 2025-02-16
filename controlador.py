@@ -9,6 +9,7 @@ from tkinter import Tk
 from modelo import egb, cfi, superior, integracion
 from vista import Ventanita
 
+
 class Controler:
 
     """ 
@@ -18,11 +19,12 @@ class Controler:
     También define las variables necesarias para generar gráficos. 
     
     Attributes: 
-        nombres (list): Lista de nombres de las categorías para los gráficos. 
-        colores (list): Lista de colores correspondientes a las categorías para los gráficos. 
-        tamano (list): Lista de tamaños correspondientes a las categorías para los gráficos. 
+        nombres (list): Una lista de nombres de los cursos.
+        colores (list): Una lista de colores asociados al grafico de barras. 
+        tamano (list): Una lista de cantidad de alumnos por curso.
+        ventana (Tk): La ventana principal de la aplicación.
+        objeto_vista (Ventanita): La vista asociada a la ventana.
     """
-    
     nombres = ['EGB', 'CFI', 'SUP', 'INTEG']
     colores = ['blue', 'red', 'green', 'yellow']
     tamano = [egb, cfi, superior, integracion]
@@ -33,19 +35,17 @@ class Controler:
         """ 
         Constructor de la clase Controler 
 
-        Args: ventana (tk.Tk): Instancia de la clase Ventanita que representa la ventana principal de la aplicación. 
+        Args: 
+            ventana (Tk): Instancia de la clase Ventanita que representa la ventana principal de la aplicación. 
         
         Attributes: 
-            ventana (tk.Tk): La ventana principal de la aplicación. 
+            ventana (Tk): La ventana principal de la aplicación. 
             objeto_vista (Ventanita): Instancia de la clase Ventanita que administra la interfaz gráfica. 
         """
 
         self.ventana=ventana
         self.objeto_vista = Ventanita(self.ventana, self.nombres, self.colores, self.tamano)
         
-
-    # app Inicializa una instancia de Ventanita, pasando la ventana, los nombres,
-    #  los colores y el tamaño para construir el grafico
 
 if __name__ == "__main__":
     

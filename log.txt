@@ -1,9 +1,88 @@
-Se ha intentado ingresar el documento 49355603 correspondiente al alumno Mateo Simón  Vega Fernándezel 2024-11-22 17:05:01.107629
-Se ha intentado ingresar el documento 54819827 correspondiente al alumno Joaquín  Bombardieriel 2024-11-22 17:07:29.577364
+Se ha intentado ingresar el documento 49355603 correspondiente al alumno Mateo Simï¿½n  Vega Fernï¿½ndezel 2024-11-22 17:05:01.107629
+Se ha intentado ingresar el documento 54819827 correspondiente al alumno Joaquï¿½n  Bombardieriel 2024-11-22 17:07:29.577364
 Se ha intentado ingresar el documento 50137425 correspondiente al alumno Samuel Ezequiel  Salutael 2024-11-22 17:28:27.671190
-Se ha intentado ingresar el documento 12345657 correspondiente al alumno Alan  Lugonesel 2024-11-22 17:31:30.350142
-Se ha intentado ingresar el documento 49623723 correspondiente al alumno Lautaro Ezequiel  Enriquezeeeeerrel 2025-01-01 14:53:38.951523
-Se ha intentado ingresar el documento 49623723 correspondiente al alumno Lautaro Ezequiel  Enriquezeeeeeel 2025-01-01 14:58:36.598823
-Se ha intentado ingresar el documento 49623723 correspondiente al alumno Lautaro Ezequiel  Enriquezeeeeeel 2025-01-01 14:58:58.846445
-Se ha intentado ingresar el documento 49623725 correspondiente al alumno Lautaro Ezequiel  Enriquezeeeeeel 2025-01-01 15:00:50.687428
-Se ha intentado ingresar el documento que ya estaba en la base de datos 52727732 correspondiente al alumno Agustina María  Cajalel 2025-01-01 19:04:49.083901
+SE DIO DE BAJA AL ALUMNO Sargent Pepper con DNI: 44455522 2025-01-10 16:16:17.008328
+
+SE DIO DE BAJA AL ALUMNO AAAA EEEE con DNI: 66655555 2025-01-10 16:19:56.122463
+Se ha ingresado el alumno: Sargent Pepper,DNI 44455553 2025-01-10 16:21:17.971000
+Error:   El nombre y el apellido solo debe contener letras:  Se intento modificar el alumno:  Sargent6   Pepper  con DNI:  44455553 2025-01-10 16:21:48.407470
+Error:  El nombre y el apellido solo debe contener letras:  Se intento ingresar el alumno:  Sargent6   Pepper  con DNI:  44455553   2025-01-10 16:21:54.055398
+Se han modificado los datos de: Sargent Pepper,DNI 44455553 2025-01-10 16:22:03.441458
+Se ha intentado ingresar el documento que ya estaba en la base de datos 51457154 correspondiente al alumno Luca Mateo  Farfï¿½n el 2025-01-10 16:22:49.776405
+Se ha ingresado el alumno: Eluney Celeste Furnari Acosta,DNI 54102137 2025-01-10 16:23:01.873662
+SE DIO DE BAJA AL ALUMNO Santiago Gimï¿½nez Silveyra con DNI: 53814337 2025-01-10 16:23:30.656874
+SE DIO DE BAJA AL ALUMNO Sargent Pepper con DNI: 44455553 2025-01-10 16:31:48.497326
+Se han modificado los datos de: Sargent Pepper,DNI 44455556 2025-01-10 16:32:28.232900
+Se han modificado los datos de: Eluney Celeste Furnari Acosta,DNI 54102137 2025-01-10 20:05:03.632261
+Error:   El nombre y el apellido solo debe contener letras:  Se intento modificar el alumno:  Eluney Celeste   Furnari Acosta5  con DNI:  54102137 2025-01-10 20:06:09.535476
+Error:  El nombre y el apellido solo debe contener letras:  Se intento ingresar el alumno:  Eluney Celeste   Furnari Acosta5  con DNI:  54102137   2025-01-10 20:06:14.111875
+Se ha intentado ingresar el documento que ya estaba en la base de datos 54102137 correspondiente al alumno Eluney Celeste  Furnari Acosta el 2025-01-10 20:06:19.056204
+Se han modificado los datos de: Eluney Celeste Furnari Acosta,DNI 54102137 2025-01-10 20:16:10.169826
+Se han modificado los datos de: Eluney Celeste Furnari Acosta,DNI 54102137 2025-01-10 20:16:54.290354
+Se ha ingresado el alumno: Eluney Celeste Furnari Acosta,DNI 54102135 2025-01-10 20:17:04.466469
+SE DIO DE BAJA AL ALUMNO Eluney Celeste Furnari Acosta con DNI: 54102137 2025-01-10 20:17:13.752559
+Se han modificado los datos de: Eluney Celeste Furnari Acosta,DNI 54102135 2025-01-10 20:19:25.378077
+Se han modificado los datos de: Eluney Celeste Furnari Acosta,DNI 54102135 2025-01-10 20:31:18.033480
+Se ha ingresado el alumno: Eluney Celeste Furnari Acosta,DNI 54102166 2025-01-10 20:38:47.181578
+Error:  Por favor debe llenar todos los entries. Se intento ingresar el alumno:  ee   etetetw  con DNI:  5555   2025-01-10 21:34:24.871858
+Error:  Por favor debe llenar todos los entries. Se intento ingresar el alumno:  FFF   FFFF  con DNI:  555   2025-01-10 21:35:16.135194
+Error:  El telefono debe ser un numero de 10 digitos Se intento ingresar el alumno:  TTTTT   TTTT  con DNI:  444   2025-01-10 21:37:30.399128
+Error:   El nombre y el apellido solo debe contener letras:  Se intento modificar el alumno:  TTTTT5   TTTT  con DNI:  44466666 2025-01-11 07:48:38.276092
+Error:  Por favor debe llenar todos los entries. Se intento ingresar el alumno:  rrr   rrrr  con DNI:  555   2025-01-11 08:03:59.772924
+Se han modificado los datos de: Eluney Celeste Furnari Acosta,DNI 54102166 2025-01-11 08:09:50.735507
+SE DIO DE BAJA AL ALUMNO Eluney Celeste Furnari Acosta con DNI: 54102166 2025-01-11 08:10:01.623788
+Se ha ingresado el alumno: Eluney Celeste Furnari Acosta,DNI 54102122 2025-01-11 08:10:17.769419
+Error:  Por favor debe llenar todos los entries. Se intento ingresar el alumno:  rrr   rrr  con DNI:  444   2025-01-11 08:10:33.581188
+Error:  El telefono debe ser un numero de 10 digitos Se intento ingresar el alumno:  rrr   rrr  con DNI:  444   2025-01-11 08:11:03.932477
+Error:  El documento debe ser un numero de 8 digitos Se intento ingresar el alumno:  rrr   rrr  con DNI:  444   2025-01-11 08:11:52.253425
+Error:  El documento debe ser un numero de 8 digitos Se intento ingresar el alumno:  rrr   rrr  con DNI:  4445555   2025-01-11 08:12:04.205778
+Error:  El documento debe ser un numero de 8 digitos Se intento ingresar el alumno:  rrr   rrr  con DNI:  4445555   2025-01-11 08:12:08.636452
+Error:  Debe ser un email valido: (usuario@dominio.com) Se intento ingresar el alumno:  rrr   rrr  con DNI:  44455553   2025-01-11 08:12:17.341436
+Se ha ingresado el alumno: rrr rrr,DNI 44455553 2025-01-11 08:12:27.463405
+SE DIO DE BAJA AL ALUMNO Benjamï¿½n Rodrï¿½guez con DNI: 50137388 2025-01-11 08:13:39.455377
+Error:  Por favor debe llenar todos los entries. Se intento ingresar el alumno:  tt   tt  con DNI:  55   2025-01-11 08:17:38.909454
+Error:  Por favor debe llenar todos los entries. Se intento ingresar el alumno:  tt5   tt  con DNI:  55   2025-01-11 08:17:56.988605
+Error:  El telefono debe ser un numero de 10 digitos Se intento ingresar el alumno:  tt5   tt  con DNI:  55   2025-01-11 08:18:23.803496
+Error:  El documento debe ser un numero de 8 digitos Se intento ingresar el alumno:  tt5   tt  con DNI:  55   2025-01-11 08:19:07.485459
+Error:  Debe ser un email valido: (usuario@dominio.com) Se intento ingresar el alumno:  tt5   tt  con DNI:  55444444   2025-01-11 08:19:19.836255
+Error:  El nombre y el apellido solo debe contener letras:  Se intento ingresar el alumno:  tt5   tt  con DNI:  55444444   2025-01-11 08:19:31.213478
+Error:  Debe ser un email valido: (usuario@dominio.com) Se intento ingresar el alumno:  tt5   tt  con DNI:  55444444   2025-01-11 08:21:07.341491
+Error:  Debe ser un email valido: (usuario@dominio.com) Se intento ingresar el alumno:  tt5   tt  con DNI:  55444444   2025-01-11 08:21:20.653258
+Error:  El nombre y el apellido solo debe contener letras:  Se intento ingresar el alumno:  tt5   tt  con DNI:  55444444   2025-01-11 08:21:34.805249
+Se ha ingresado el alumno: tt tt,DNI 55444444 2025-01-11 08:21:54.576678
+SE DIO DE BAJA AL ALUMNO tt tt con DNI: 55444444 2025-01-11 08:27:06.095358
+Error:  Por favor debe llenar todos los entries. Se intento ingresar el alumno:  GG   GG  con DNI:  555   2025-01-11 08:27:21.332989
+Error:  Por favor debe llenar todos los entries. Se intento ingresar el alumno:  ttr   rerre  con DNI:  4443   2025-01-11 08:30:21.997168
+Error:  El telefono debe ser un numero de 10 digitos Se intento ingresar el alumno:  ttr   rerre  con DNI:  4443   2025-01-11 08:30:45.932521
+Error:  El telefono debe ser un numero de 10 digitos Se intento ingresar el alumno:  ttr5   rerre  con DNI:  4443   2025-01-11 08:30:55.621315
+Error:  El documento debe ser un numero de 8 digitos Se intento ingresar el alumno:  ttr5   rerre  con DNI:  4443   2025-01-11 08:31:14.004420
+Error:  Debe ser un email valido: (usuario@dominio.com) Se intento ingresar el alumno:  ttr5   rerre  con DNI:  44435555   2025-01-11 08:31:27.189182
+Error:  El nombre y el apellido solo debe contener letras:  Se intento ingresar el alumno:  ttr5   rerre  con DNI:  44435555   2025-01-11 08:31:39.669548
+Se ha ingresado el alumno: ttr rerre,DNI 44435555 2025-01-11 08:31:45.655493
+Se han modificado los datos de: ttr rerre,DNI 44435555 2025-01-11 08:37:51.122621
+Error:   El documento debe ser un numero de 8 digitos Se intento modificar el alumno:  ttr   rerre  con DNI:  4443555 2025-01-11 08:38:07.557704
+Error:   El telefono debe ser un numero de 10 digitos Se intento modificar el alumno:  ttr   rerre  con DNI:  44435558 2025-01-11 08:38:19.069537
+SE DIO DE BAJA AL ALUMNO rrr rrr con DNI: 44455553 2025-01-11 08:39:01.135470
+SE DIO DE BAJA AL ALUMNO ttr rerre con DNI: 44435555 2025-01-11 08:39:17.535217
+SE DIO DE BAJA AL ALUMNO TTTTT TTTT con DNI: 44466666 2025-01-11 08:42:21.031089
+SE DIO DE BAJA AL ALUMNO Eluney Celeste Furnari Acosta con DNI: 54102122 2025-01-11 08:42:32.855909
+Error:  El nombre y el apellido solo debe contener letras:  Se intento ingresar el alumno:  Eluney Celeste33   Furnari Acosta  con DNI:  54102135   2025-01-11 08:46:52.997640
+Error:   El nombre y el apellido solo debe contener letras:  Se intento modificar el alumno:  Eluney Celeste33   Furnari Acosta  con DNI:  54102135 2025-01-11 08:47:13.300854
+Error:  Por favor debe llenar todos los entries. Se intento ingresar el alumno:  eette   etettret  con DNI:  555   2025-01-11 08:49:17.213200
+Error:  El telefono debe ser un numero de 10 digitos Se intento ingresar el alumno:  eette   etettret  con DNI:  555   2025-01-11 08:49:31.989479
+Error:  El documento debe ser un numero de 8 digitos Se intento ingresar el alumno:  eette   etettret  con DNI:  555   2025-01-11 08:49:45.493646
+Error:  Debe ser un email valido: (usuario@dominio.com) Se intento ingresar el alumno:  eette   etettret  con DNI:  55544444   2025-01-11 08:49:55.237984
+Se ha ingresado el alumno: eette etettret,DNI 55544444 2025-01-11 08:50:05.672640
+Se han modificado los datos de: eette etettret,DNI 55544444 2025-01-11 08:56:04.991549
+Se ha ingresado el alumno: eette etettret,DNI 55544944 2025-01-11 15:22:37.559641
+Se ha intentado ingresar el documento que ya estaba en la base de datos 55544944 correspondiente al alumno SARGENT  PEPPER el 2025-01-11 15:23:27.958679
+Se ha ingresado el alumno: SARGENT PEPPER,DNI 55544977 2025-01-11 15:23:53.494509
+SE DIO DE BAJA AL ALUMNO eette etettret con DNI: 55544944 2025-01-11 15:25:49.363821
+SE DIO DE BAJA AL ALUMNO eette etettret con DNI: 55544999 2025-01-11 15:26:04.235244
+Se han modificado los datos de: eette etettret,DNI 55544444 2025-01-11 15:26:17.476920
+Se ha ingresado el alumno: PEPE GRILLO,DNI 55544411 2025-01-11 15:30:57.798600
+Se ha ingresado el alumno: RENATA RENAN,DNI 55544455 2025-01-11 15:33:07.125916
+Se ha ingresado el alumno: SERGIO TORRES,DNI 55544333 2025-01-11 15:35:08.357694
+Se ha ingresado el alumno: SERGIO TORRES,DNI 55544111 2025-01-11 15:36:55.245526
+
+Se han modificado los datos de: RENATA RENAN,DNI 55544455 2025-02-16 16:16:42.504509
