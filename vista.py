@@ -11,6 +11,7 @@ from tkinter import ttk, messagebox
 from tkinter import Tk, Frame
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import babel.numbers
 
 
 # ##############################################
@@ -32,7 +33,7 @@ def crear_tabla():
     cursor = con.cursor()
     sql = """CREATE TABLE IF NOT EXISTS alumnos
              (id INTEGER PRIMARY KEY AUTOINCREMENT,
-             nombre text, apellido text, curso text, domicilio text, telefono text, f_nac text)
+             nombre text, apellido text,dni text, curso text, domicilio text, telefono text, f_nac text)
     """
     cursor.execute(sql)
     con.commit()
@@ -52,6 +53,7 @@ def limpiar():
             
             nombre_val.set("")
             apellido_val.set("")
+            dni_val.set("")
             curso_val.set("")
             domicilio_val.set("")
             tel_val.set("")
@@ -61,7 +63,6 @@ def limpiar():
 conexion()
 crear_tabla()
 
-# 
 def actualizar_grafico():
     # Limpiar el gráfico actual
     ax.clear()
@@ -73,10 +74,10 @@ def actualizar_grafico():
     canvas.draw()
 
 # alta de datos en SQL3
-def alta(nombre, apellido, curso, domicilio, telefono ,nacimiento, tree):
+def alta(nombre, apellido, dni , curso, domicilio, telefono ,nacimiento, tree):
 
     # controla que en todos los entries se hayan ingresado datos
-    if (nombre=="" or apellido=="" or curso=="" or domicilio=="" or nacimiento==""):
+    if (nombre=="" or apellido=="" or dni=="" or curso=="" or domicilio=="" or nacimiento==""):
         messagebox.showwarning("Advertencia", "Por favor debe llenar todos los entries.")
         return
     
@@ -88,6 +89,16 @@ def alta(nombre, apellido, curso, domicilio, telefono ,nacimiento, tree):
     else:
         print("Debe ser un numero de 10 digitos")
         Label(ventana, text="El telefono debe ser un numero de 10 digitos" , font=("Agency FB", 19)).place(x=40,y=50)
+        return
+    
+    # Expresión regular para exactamente 8 digitos para DNI
+    # Validar si la cadena coincide con el patrón
+    patron_num = "^([0-9]{8})$"
+    if re.match(patron_num, dni):
+        print("Validado")
+    else:
+        print("Debe ser un numero de 10 digitos")
+        Label(ventana, text="El dni debe ser un numero de 8 digitos" , font=("Agency FB", 19)).place(x=40,y=50)
         return
     
     # Validar si la cadena coincide con el patrón: letras mayusculas, minusculas, con acento y ñ
@@ -103,13 +114,13 @@ def alta(nombre, apellido, curso, domicilio, telefono ,nacimiento, tree):
             telefono= int(telefono)
             print(type(telefono), "telefono")        
 
-            print(nombre, apellido, curso, domicilio, telefono, nacimiento)
+            print(nombre, apellido, dni, curso, domicilio, telefono, nacimiento)
             con=conexion()
             cursor=con.cursor()
-            data=(nombre, apellido, curso, domicilio, telefono, nacimiento)
+            data=(nombre, apellido, dni, curso, domicilio, telefono, nacimiento)
             print(type(data), data)
                 
-            sql="INSERT INTO alumnos(nombre, apellido, curso, domicilio, telefono, f_nac) VALUES(?, ?, ?, ?, ?, ?)"
+            sql="INSERT INTO alumnos(nombre, apellido, dni, curso, domicilio, telefono, f_nac) VALUES(?, ?, ?, ?, ?, ?,?)"
             cursor.execute(sql, data)
             con.commit()
             print("Estoy en alta todo ok")
@@ -149,11 +160,16 @@ def borrar(tree):
         con.commit()
         tree.delete(valor)
 
-def modificar(nombre, apellido, curso, domicilio, telefono, nacimiento, tree):
+def modificar(nombre, apellido, dni, curso, domicilio, telefono, nacimiento, tree):
     valor = tree.selection()
     # si no se selecciona un registro para modificar informa error
     if not valor:
         messagebox.showwarning("Advertencia", "Por favor seleccione una fila para modificar.")
+        return
+    
+    # controla que en todos los entries se hayan ingresado datos
+    if (nombre=="" or apellido=="" or dni=="" or curso=="" or domicilio=="" or nacimiento==""):
+        messagebox.showwarning("Advertencia", "Por favor debe llenar todos los entries.")
         return
     
     # Expresión regular para exactamente 10 dígitos para telefono
@@ -165,33 +181,50 @@ def modificar(nombre, apellido, curso, domicilio, telefono, nacimiento, tree):
         print("Debe ser un numero de 10 digitos")
         Label(ventana, text="El telefono debe ser un numero de 10 digitos" , font=("Agency FB", 19)).place(x=40,y=50)
         return
-    # controla que en todos los entries se hayan ingresado datos
-    if (nombre=="" or apellido=="" or curso=="" or domicilio=="" or nacimiento==""):
-        messagebox.showwarning("Advertencia", "Por favor debe llenar todos los entries.")
-        return
-    if conformidad("DESEA MODIFICAR EL REGISTRO?")=="no":
-        limpiar()
-        return
-    else:
-        telefono=int(telefono)
-        print(type(telefono), "telefono") 
-        print("valor:",valor)   
-        item = tree.item(valor)
-        print("item:",item)     
-        print(item['text'])
-        con=conexion()
-        cursor = con.cursor()
-        mi_id = int(item['text'])
-        data = (nombre, apellido, curso, domicilio, telefono, nacimiento, mi_id)
-        print(data)
-        sql = "UPDATE alumnos SET nombre=?, apellido=?, curso=?, domicilio=?, telefono=?, f_nac=? WHERE id=?;"
-        cursor.execute(sql, data)
-        con.commit()
-
-        # Limpiar los campos de entrada
-        limpiar()
-        actualizar_treeview(tree)
     
+    # Expresión regular para exactamente 8 digitos para DNI
+    # Validar si la cadena coincide con el patrón
+    patron_num = "^([0-9]{8})$"
+    if re.match(patron_num, dni):
+        print("Validado")
+    else:
+        print("Debe ser un numero de 10 digitos")
+        Label(ventana, text="El dni debe ser un numero de 8 digitos" , font=("Agency FB", 19)).place(x=40,y=50)
+        return
+        
+    
+    # Validar si la cadena coincide con el patrón: letras mayusculas, minusculas, con acento y ñ
+    patron = "^[a-zA-ZáéíóúñÑ ]+$"
+    if(re.match(patron, nombre) and re.match(patron, apellido)):
+        Label(ventana, text="Nombre válido: "+nombre+ " "+apellido , font=("Agency FB", 19)).place(x=40,y=50)
+
+        if conformidad("DESEA MODIFICAR EL REGISTRO?")=="no":
+            limpiar()
+            return
+    
+        else:
+            telefono=int(telefono)
+            print(type(telefono), "telefono") 
+            print("valor:",valor)   
+            item = tree.item(valor)
+            print("item:",item)     
+            print(item['text'])
+            con=conexion()
+            cursor = con.cursor()
+            mi_id = int(item['text'])
+            data = (nombre, apellido, dni, curso, domicilio, telefono, nacimiento, mi_id)
+            print(data)
+            sql = "UPDATE alumnos SET nombre=?, apellido=?, dni=?, curso=?, domicilio=?, telefono=?, f_nac=? WHERE id=?;"
+            cursor.execute(sql, data)
+            con.commit()
+
+            # Limpiar los campos de entrada
+            limpiar()
+            actualizar_treeview(tree)
+    
+    # si se ingreso por error un caracter no valido con el nombre o apellido
+    else:
+        Label(ventana, text= nombre+ " "+apellido+ ": solo debe contener letras", font=("Agency FB", 19)).place(x=40,y=50)
 
 def consultar(tree):
     valor = tree.selection()
@@ -217,6 +250,8 @@ def consultar(tree):
     entrada5.insert(0, item['values'][4])
     entrada6.delete(0, 'end')
     entrada6.insert(0, item['values'][5])
+    entrada7.delete(0, 'end')
+    entrada7.insert(0, item['values'][5])
     Label(ventana, text="                                                        ", font=("Agency FB", 19)).place(x=40,y=50)
    
 def cambiar_colores():
@@ -258,14 +293,14 @@ def actualizar_treeview(mitreview):
 
     for fila in resultado:
         print(fila)
-        mitreview.insert("", 0, text=fila[0], values=(fila[1], fila[2], fila[3], fila[4], fila[5], fila[6]))
-        if (fila[3])=="egb":
+        mitreview.insert("", 0, text=fila[0], values=(fila[1], fila[2], fila[3], fila[4], fila[5], fila[6], fila[7]))
+        if (fila[4])=="egb":
             egb += 1
-        if (fila[3])=="cfi":
+        if (fila[4])=="cfi":
             cfi += 1
-        if (fila[3])=="superior":
+        if (fila[4])=="superior":
             superior += 1
-        if (fila[3])=="integracion":
+        if (fila[4])=="integracion":
             integracion += 1
         print("egb: ", egb, "cfi", cfi, "superior", superior, "integracion", integracion)
     # Actualizar el gráfico después de actualizar el TreeView
@@ -276,10 +311,11 @@ def actualizar_treeview(mitreview):
 # ademans la imprime en consola
 
 def elegir_fecha():
-    entrada6.delete(0, END)
+    entrada7.delete(0, END)
     print("El dia elegido es: " + calendario.get_date())
     nac_val= calendario.get_date()
-    entrada6.insert(0, calendario.get_date())
+    entrada7.insert(0, calendario.get_date())
+
 
 # ##############################################
 # VISTA
@@ -294,12 +330,11 @@ root.configure(bg="#2F4F4F", padx=20, pady=20)
 # calendario y ventana
 # de calendario se necesita calendario.get_date() en la otra funcion
 
-# Titulo principal de ña ventana         
+# Titulo principal de la ventana         
 titulo = Label(root, text="SISTEMA DE GESTION DE DATOS E INGRESOS DE ALUMNOS", bg="green", fg="thistle1", height=1, width=60,font=("Garamond",14,"bold"))
 titulo.grid(row=0, column=0, columnspan=6, padx=1, pady=1, sticky=W+E)
 
 ###################
-
 
 # crear un frame dentro de la ventana
 frame = Frame(root, bg='green')
@@ -330,40 +365,43 @@ nombre = Label(root, text="Nombre/s", font=("Candara",12), width=15)
 nombre.grid(row=1, column=0, sticky=W)
 apellido=Label(root, text="Apellido/s", font=("Candara",12),width=15)
 apellido.grid(row=2, column=0, sticky=W)
+dni=Label(root, text="D.N.I:      ", font=("Candara",12),width=15)
+dni.grid(row=3, column=0, sticky=W)
 curso=Label(root, text="Curso      ", font=("Candara",12),width=15)
-curso.grid(row=3, column=0, sticky=W)
+curso.grid(row=4, column=0, sticky=W)
 domicilio=Label(root, text="Domicilio", font=("Candara",12), width=15)
-domicilio.grid(row=4, column=0, sticky=W)
+domicilio.grid(row=5, column=0, sticky=W)
 telefono=Label(root, text="Telefono", font=("Candara",12), width=15)
-telefono.grid(row=5, column=0, sticky=W)
+telefono.grid(row=6, column=0, sticky=W)
 nacimiento= Label(root, text="F. Nac.", font=("Candara",12), width=15)
-nacimiento.grid(row=6, column=0, sticky=W)
+nacimiento.grid(row=7, column=0, sticky=W)
 
 
 # Variables campos de Entrada
-nombre_val, apellido_val, curso_val, domicilio_val, tel_val, nac_val = StringVar(), StringVar(), StringVar(), StringVar(), StringVar(), StringVar()
+nombre_val, apellido_val, dni_val, curso_val, domicilio_val, tel_val, nac_val = StringVar(), StringVar(), StringVar(), StringVar(), StringVar(), StringVar(), StringVar()
 w_ancho = 20
 
 entrada1 = Entry(root, textvariable = nombre_val, width = w_ancho,font=("Candara",12)) 
 entrada1.grid(row = 1, column = 1)
 entrada2 = Entry(root, textvariable = apellido_val, width = w_ancho, font=("Candara",12)) 
 entrada2.grid(row = 2, column = 1)
-#entrada3 = Entry(root, textvariable = curso_val, width = w_ancho, font=("Candara",12)) 
-#entrada3.grid(row = 3, column = 1)
-entrada3 = ttk.Combobox(root, textvariable = curso_val, width = w_ancho, font=("Candara",12)) 
+entrada3 = Entry(root, textvariable = dni_val, width = w_ancho, font=("Candara",12)) 
 entrada3.grid(row = 3, column = 1)
-entrada3['values'] = ('egb',  
+entrada4 = ttk.Combobox(root, textvariable = curso_val, width = w_ancho, font=("Candara",12)) 
+entrada4.grid(row = 4, column = 1)
+entrada4['values'] = ('egb',  
                           'cfi', 
                           'superior', 
-                          'integracion', 
+                          'integracion',
+                          'ex' 
                           ) 
-entrada4 = Entry(root, textvariable = domicilio_val, width = w_ancho, font=("Candara",12)) 
-entrada4.grid(row = 4, column = 1)
-entrada5 = Entry(root, textvariable = tel_val, width = w_ancho, font=("Candara",12)) 
+entrada5 = Entry(root, textvariable = domicilio_val, width = w_ancho, font=("Candara",12)) 
 entrada5.grid(row = 5, column = 1)
-tel_val.set("")
-entrada6 = Entry(root, textvariable = nac_val, width = w_ancho, font=("Candara",12)) 
+entrada6 = Entry(root, textvariable = tel_val, width = w_ancho, font=("Candara",12)) 
 entrada6.grid(row = 6, column = 1)
+tel_val.set("")
+entrada7 = Entry(root, textvariable = nac_val, width = w_ancho, font=("Candara",12)) 
+entrada7.grid(row = 7, column = 1)
 nac_val.set("")
 
 ################################################
@@ -390,7 +428,7 @@ tree = ttk.Treeview(root)
 style = ttk.Style()
 style.theme_use("alt")
 
-tree["columns"]=("col1", "col2", "col3", "col4", "col5", "col6")
+tree["columns"]=("col1", "col2", "col3", "col4", "col5", "col6", "col7")
 tree.column("#0", width=90, minwidth=50)
 tree.column("col1", width=200, minwidth=80)
 tree.column("col2", width=200, minwidth=80)
@@ -398,39 +436,41 @@ tree.column("col3", width=200, minwidth=80)
 tree.column("col4", width=200, minwidth=80)
 tree.column("col5", width=200, minwidth=80)
 tree.column("col6", width=200, minwidth=80)
+tree.column("col7", width=200, minwidth=80)
 tree.heading("#0", text="ID")
 tree.heading("col1", text="NOMBRE")
 tree.heading("col2", text="APELLIDO")
-tree.heading("col3", text="CURSO")
-tree.heading("col4", text="DOMICILIO")
-tree.heading("col5", text="TELEFONO")
-tree.heading("col6", text="F. NACIMIENTO")
-tree.grid(row=12, column=0, columnspan=6)
+tree.heading("col3", text="DNI")
+tree.heading("col4", text="CURSO")
+tree.heading("col5", text="DOMICILIO")
+tree.heading("col6", text="TELEFONO")
+tree.heading("col7", text="F. NACIMIENTO")
+tree.grid(row=13, column=0, columnspan=6)
 
 ventana = Frame(root, bg="#FF7F50", height= 122, borderwidth=2, relief=RAISED)
-ventana.grid(row=13, column=0, columnspan=6, padx=1, pady=1, sticky=W+E)
+ventana.grid(row=14, column=0, columnspan=6, padx=1, pady=1, sticky=W+E)
 
 actualizar_treeview(tree)
 ##################################
 # BOTONES DE CONTROL
 ##################################
 
-boton_alta=Button(root, text="Alta", command=lambda:alta(nombre_val.get(), apellido_val.get(), curso_val.get(),domicilio_val.get(), tel_val.get(),nac_val.get(), tree), font=("Candara",12), width=15)
-boton_alta.grid(row=9, column=0)
+boton_alta=Button(root, text="Alta", command=lambda:alta(nombre_val.get(), apellido_val.get(),dni_val.get(), curso_val.get(),domicilio_val.get(), tel_val.get(),nac_val.get(), tree), font=("Candara",12), width=15)
+boton_alta.grid(row=10, column=0)
 
 boton_borrar=Button(root, text="Borrar", command=lambda:borrar(tree), font=("Candara",12), width=15)
-boton_borrar.grid(row=10, column=0)
+boton_borrar.grid(row=11, column=0)
 
-boton_modificar=Button(root, text="Modificar", command=lambda:modificar(nombre_val.get(), apellido_val.get(), curso_val.get(),domicilio_val.get(), tel_val.get(),nac_val.get(), tree), font=("Candara",12), width=15)
-boton_modificar.grid(row=10, column=1)
+boton_modificar=Button(root, text="Modificar", command=lambda:modificar(nombre_val.get(), apellido_val.get(),dni_val.get(), curso_val.get(),domicilio_val.get(), tel_val.get(),nac_val.get(), tree), font=("Candara",12), width=15)
+boton_modificar.grid(row=11, column=1)
 
 boton_consultar=Button(root, text="Consultar", command=lambda:consultar(tree), font=("Candara",12), width=15)
-boton_consultar.grid(row=9, column=1)
+boton_consultar.grid(row=10, column=1)
 
 boton_fecha = Button(root, text="ACEPTAR", command=elegir_fecha, bg="black", fg="white", font=("Candara",12), width=15)
-boton_fecha.grid(row=9, column=2)
+boton_fecha.grid(row=10, column=2)
 
 boton_sorpresa = Button(root, text="SORPRESA", command=cambiar_colores, bg="white", fg="black", font=("Candara",12), width=15)
-boton_sorpresa.grid(row=8, column=5)
+boton_sorpresa.grid(row=9, column=5)
 
 root.mainloop()
